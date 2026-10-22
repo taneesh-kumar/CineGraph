@@ -1,0 +1,48 @@
+services:
+  neo4j:
+    image: neo4j:${NEO4J_VERSION:-5.26.0}
+    container_name: cinegraph-neo4j
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${NEO4J_HTTP_PORT:-7474}:7474"
+      - "127.0.0.1:${NEO4J_BOLT_PORT:-7687}:7687"
+    environment:
+      - NEO4J_AUTH=${NEO4J_USER:-neo4j}/${NEO4J_PASSWORD:-cinegraph_neo4j_secret_change_me}
+      - NEO4J_PLUGINS=["apoc"]
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:7474 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  monetdb:
+    image: monetdb/monetdb:${MONETDB_VERSION:-latest}
+    container_name: cinegraph-monetdb
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${MONETDB_PORT:-50000}:50000"
+    environment:
+      - MDB_FARM_DIR=/var/monetdb5/dbfarm
+      - MDB_CREATE_DBS=${MONETDB_DATABASE:-cinegraph}
+      - MDB_DB_ADMIN_PASS=${MONETDB_PASSWORD:-cinegraph_monetdb_secret_change_me}
+      - MDB_DAEMON_PASS=${MONETDB_DAEMON_PASS:-cinegraph_daemon_passphrase_change_me}
+    volumes:
+      - monetdb_data:/var/monetdb5/dbfarm
+    healthcheck:
+      test: ["CMD-SHELL", "monetdb status ${MONETDB_DATABASE:-cinegraph} || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 25s
+
+volumes:
+  neo4j_data:
+    name: cinegraph_neo4j_data
+  neo4j_logs:
+    name: cinegraph_neo4j_logs
+  monetdb_data:
+    name: cinegraph_monetdb_data
