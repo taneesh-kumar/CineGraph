@@ -45,7 +45,7 @@ def main():
     args = parser.parse_args()
     settings = get_settings()
 
-    dataset_dir = args.dataset_dir or settings.DATASET_DIR
+    dataset_dir = args.dataset_dir or settings.resolved_dataset_dir
     batch_size = args.batch_size or settings.INGESTION_BATCH_SIZE
     sample_limit = args.sample_limit if args.sample_limit is not None else settings.INGESTION_SAMPLE_LIMIT
 

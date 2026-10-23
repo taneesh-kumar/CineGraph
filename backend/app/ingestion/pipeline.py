@@ -219,6 +219,13 @@ class IngestionPipeline:
                     self.monetdb.load_ratings_batch(monetdb_batch)
                     self.metrics["ratings"]["loaded"] += len(neo4j_batch)
                     loaded_user_ids.update(user_batch)
+                    
+                    target_ratings = self.sample_limit * 50 if self.sample_limit > 0 else "all"
+                    logger.info(
+                        f"  -> Ingested {self.metrics['ratings']['loaded']}/{target_ratings} ratings "
+                        f"({len(loaded_user_ids)} unique users)..."
+                    )
+                    
                     neo4j_batch.clear()
                     monetdb_batch.clear()
                     user_batch.clear()
@@ -273,6 +280,10 @@ class IngestionPipeline:
                     self.neo4j.load_tags_batch(neo4j_batch)
                     self.monetdb.load_tags_batch(monetdb_batch)
                     self.metrics["tags"]["loaded"] += len(neo4j_batch)
+                    
+                    target_tags = self.sample_limit * 10 if self.sample_limit > 0 else "all"
+                    logger.info(f"  -> Ingested {self.metrics['tags']['loaded']}/{target_tags} tags...")
+                    
                     neo4j_batch.clear()
                     monetdb_batch.clear()
                     user_batch.clear()

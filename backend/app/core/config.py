@@ -43,6 +43,14 @@ class Settings(BaseSettings):
     INGESTION_BATCH_SIZE: int = 5000
     INGESTION_SAMPLE_LIMIT: int = 0  # 0 means full import, > 0 sets row/movie limit
 
+    @property
+    def resolved_dataset_dir(self) -> str:
+        """Return absolute dataset directory path."""
+        p = Path(self.DATASET_DIR)
+        if not p.is_absolute():
+            return str((REPO_ROOT / p).resolve())
+        return str(p.resolve())
+
     model_config = SettingsConfigDict(
         env_file=str(REPO_ROOT / ".env"),
         env_file_encoding="utf-8",
