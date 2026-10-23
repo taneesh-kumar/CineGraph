@@ -183,7 +183,33 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the CineGraph interface.
+### Step 6: Run Tests & Verification
+
+#### Automated Smoke Tests
+Exercise the complete end-to-end API against the live system:
+```bash
+python scripts/smoke_test.py
+```
+
+#### Backend Test Suite (Pytest)
+```bash
+cd backend
+.venv\Scripts\pytest -v
+```
+
+#### Frontend Test Suite (Node test runner)
+```bash
+cd frontend
+npm test
+npm run build
+```
+
+#### Database Benchmarks & Recommendation Evaluation
+Run the reproducible Phase 5 benchmark suite and generate 2D charts:
+```bash
+python scripts/run_benchmarks.py run --warmup 2 --repetitions 5 --eval-users 25
+```
+Results and charts are saved directly to `reports/phase-5/`.
 
 ---
 
@@ -218,10 +244,11 @@ docker compose down -v
 | Feature / Area | Status | Description |
 |---|---|---|
 | **Repository Foundation** | ✅ Completed | Structure, build setups, environment configs, documentation |
-| **FastAPI Backend** | ✅ Completed | Versioned REST API (`/api/v1`), dependency injection, health & ready probes, 62 automated tests |
+| **FastAPI Backend** | ✅ Completed | Versioned REST API (`/api/v1`), dependency injection, health & ready probes, 68 automated tests |
 | **Dual Database Integration** | ✅ Completed | Isolated Neo4j Community (7687) & MonetDB (50000) with verified entity parity |
 | **MovieLens Ingestion Pipeline** | ✅ Completed | Streaming, idempotent dual-database ingestion pipeline with preflight and sample modes |
-| **Recommendation Engine**| ✅ Completed | Neo4j Cypher graph queries: Jaccard content similarity & personalized collaborative community walks |
+| **Recommendation Engine**| ✅ Completed | Neo4j Cypher graph queries: content genre similarity & personalized collaborative community walks |
 | **Analytics Dashboard** | ✅ Completed | MonetDB vectorized aggregations: Top-rated movies with threshold filters, genre popularity, rating distributions |
 | **Complete Web Frontend** | ✅ Completed | Next.js 16 App Router UI with Movie Discovery, Recommendations, Analytics, System Status, 11 tests |
-| **Performance Benchmark**| ✅ Completed | API latency benchmarks and comparative execution-time evaluation framework |
+| **Performance Benchmark**| ✅ Completed | Automated timing, percentile analysis, and offline recommendation evaluator with matplotlib visualizations |
+| **Validation & Hardening**| ✅ Completed | Live smoke testing, non-destructive parity audit, and demonstration script |
