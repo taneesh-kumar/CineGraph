@@ -59,12 +59,19 @@
   - *Strict Rule*: The browser communicates solely with the FastAPI backend; it **never** connects directly to Neo4j or MonetDB.
 
 ### 3.2 Backend (FastAPI & Python)
-- **Framework**: FastAPI with asynchronous endpoints.
+- **Framework**: FastAPI with clean layered separation of concerns.
 - **Settings**: Strongly typed configuration via `pydantic-settings` reading from `.env`.
+- **Database Access & Lifecycle**:
+  - `app/core/database.py`: Unified `DatabaseManager` providing singleton Neo4j driver with auto-closing lifespan and managed MonetDB connection/cursor context managers.
+  - `app/repositories/neo4j_repo.py`: Parameterized Cypher queries isolating graph traversals from route handlers.
+  - `app/repositories/monetdb_repo.py`: Parameterized SQL queries isolating columnar queries from route handlers.
+- **Health Probes**:
+  - Liveness probe: `GET /health` and `GET /api/v1/health` (process responsiveness).
+  - Readiness probe: `GET /ready` and `GET /api/v1/ready` (validates independent Neo4j & MonetDB connectivity without leaking credentials).
 - **Role**:
   - Serves as the middle tier abstracting database complexities.
-  - Exposes `/api/v1/recommendations` querying Neo4j.
-  - Exposes `/api/v1/analytics` querying MonetDB.
+  - Exposes `/api/v1/recommendations` querying Neo4j (Phase 3.2+).
+  - Exposes `/api/v1/analytics` querying MonetDB (Phase 3.2+).
   - Exposes benchmarking metrics comparing query runtimes.
 
 ### 3.3 Graph Database (Neo4j Community Edition)
@@ -98,6 +105,7 @@
 |---|---|---|
 | **Repository Structure** | Implemented | Monorepo layout with `frontend`, `backend`, `docker`, `docs` |
 | **FastAPI Skeleton** | Implemented | Health endpoint (`GET /health`), Root info endpoint (`GET /`), typed configuration |
+| **Backend Foundation & DB Access** | Implemented (Phase 3.1) | `DatabaseManager`, Neo4jRepository, MonetDBRepository, `/ready` probe, custom exception hierarchy |
 | **Frontend Foundation** | Implemented | Next.js App Router with TypeScript & Tailwind CSS, clean CineGraph hero layout |
 | **Docker Compose** | Implemented | Orchestrates Neo4j Community & MonetDB with persisted volumes and port bindings |
 | **Database Adapters** | Implemented | Python drivers (`neo4j` and `pymonetdb`) connection integration verified |
@@ -106,3 +114,4 @@
 | **Analytics Dashboard** | Planned | Recharts / Chart.js integration displaying MonetDB aggregated stats |
 | **Recommendation Engine**| Planned | Cypher graph queries and personalized recommendation endpoints |
 | **Performance Benchmark**| Planned | Execution-time comparative evaluation framework |
+

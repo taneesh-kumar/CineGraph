@@ -114,8 +114,9 @@ python -m app.ingestion.verify
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 - API Root: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-- Health Check: [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
-- Swagger Documentation: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- Liveness Probe: [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health) or `/api/v1/health`
+- Database Readiness Probe: [http://127.0.0.1:8000/ready](http://127.0.0.1:8000/ready) or `/api/v1/ready`
+- Interactive OpenAPI Docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 ---
 
