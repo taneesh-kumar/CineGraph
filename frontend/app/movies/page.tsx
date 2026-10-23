@@ -63,7 +63,7 @@ export default function MoviesPage() {
             <EngineBadge engine="neo4j" />
           </div>
           <p className="text-sm text-neutral-400 mt-1">
-            Search titles, filter genres, and explore node entities in the 1,000-movie development sample.
+            Search titles, filter genres, and explore node entities in the 2,500-movie (2020–2023) dataset sample.
           </p>
         </div>
 

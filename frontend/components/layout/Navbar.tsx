@@ -14,7 +14,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Overview", icon: Compass, description: "System summary & quick entry" },
-  { href: "/movies", label: "Movies", icon: Film, description: "Discover & search 1,000 movies" },
+  { href: "/movies", label: "Movies", icon: Film, description: "Discover & search 2,500 movies" },
   { href: "/recommendations", label: "Recommendations", icon: Sparkles, description: "Neo4j graph & collaborative engine" },
   { href: "/analytics", label: "Analytics", icon: BarChart3, description: "MonetDB columnar aggregations" },
   { href: "/system", label: "System Status", icon: Activity, description: "Neo4j & MonetDB health" },

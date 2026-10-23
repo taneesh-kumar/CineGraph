@@ -132,11 +132,11 @@ npm run start
 
 ## 7. Known Dataset Sample Scope
 
-The current development environment contains an ingested subset of MovieLens 32M:
-- **1,000 Movies** (Movie IDs 1 through 1,000).
-- **2,364 Users** (User IDs 1 through 2,364).
-- **19 Movie Genres**.
-- **50,000 Ratings** (Average ratings calculated via MonetDB columnar scans).
-- **10,000 Tags**.
+The active environment contains an ingested 2020–2023 subset of MovieLens 32M:
+- **2,500 Movies** (Released between 2020 and 2021 within the 2020–2023 query window).
+- **18,327 Users** in MonetDB (`movie_users`), **16,224 Active Users** in Neo4j.
+- **16 Movie Genres** (with 4,027 movie-genre relationship links).
+- **119,689 Ratings** (Average ratings calculated via MonetDB columnar scans).
+- **25,999 Tags** in MonetDB, **26,000 Tag Relationships** in Neo4j.
 
-Searches and recommendations outside the 1,000-movie development sample gracefully display clear empty states explaining that the target entity was not ingested into the development slice.
+Searches and recommendations outside the 2,500-movie dataset sample gracefully display clear empty states explaining that the target entity was not ingested into the development slice.

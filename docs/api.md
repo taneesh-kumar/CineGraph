@@ -252,9 +252,9 @@ Open [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) to test any of the
 
 ---
 
-## 5. Phase 3.4 Latency Benchmark & Performance Baseline
+## 5. Performance Baseline & Historical Benchmarks
 
-Measurements conducted on the verified MovieLens 32M development sample (1,000 movies, 2,364 users, 19 genres, 50,000 ratings, 10,000 tags) over 10 repeated requests per endpoint:
+> **Historical Note**: The following baseline measurements were conducted during Phase 3.4 on the initial 1,000-movie development baseline (1,000 movies, 2,364 users, 19 genres, 50,000 ratings, 10,000 tags) over 10 repeated requests per endpoint:
 
 | Endpoint | Target Engine | Cold Request | Mean Warm | Median Warm | Range (Min - Max) |
 |---|---|---|---|---|---|

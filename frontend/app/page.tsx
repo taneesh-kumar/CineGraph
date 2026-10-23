@@ -76,7 +76,7 @@ export default function OverviewPage() {
               Academic NoSQL Demonstration
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-300">
-              MovieLens 32M Sample (1,000 Movies)
+              MovieLens 32M Sample (2020–2023)
             </span>
           </div>
 
@@ -181,28 +181,28 @@ export default function OverviewPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <StatCard
               title="Ingested Movies"
-              value={summary?.total_movies?.toLocaleString() ?? "1,000"}
-              subtitle="MovieLens 32M Sample"
+              value={summary?.total_movies?.toLocaleString() ?? "2,500"}
+              subtitle="2020–2023 Sample"
               icon={Film}
               engine="monetdb"
             />
             <StatCard
               title="Total Ratings"
-              value={summary?.total_ratings?.toLocaleString() ?? "50,000"}
+              value={summary?.total_ratings?.toLocaleString() ?? "119,689"}
               subtitle="Analytical Fact Table"
               icon={Star}
               engine="monetdb"
             />
             <StatCard
               title="Active Users"
-              value={summary?.total_users?.toLocaleString() ?? "2,364"}
+              value={summary?.total_users?.toLocaleString() ?? "18,327"}
               subtitle="User Rating Graph"
               icon={Users}
               engine="neo4j"
             />
             <StatCard
               title="Movie Genres"
-              value={summary?.total_genres?.toLocaleString() ?? "19"}
+              value={summary?.total_genres?.toLocaleString() ?? "16"}
               subtitle="Graph Dimension Nodes"
               icon={Tags}
               engine="hybrid"

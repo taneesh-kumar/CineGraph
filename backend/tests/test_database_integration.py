@@ -31,23 +31,23 @@ def test_live_neo4j_repository_queries():
 
     repo = Neo4jRepository(db_manager=db_manager)
     # Test movie fetch
-    movie = repo.get_movie_by_id(1)
+    movie = repo.get_movie_by_id(217465)
     assert movie is not None
-    assert movie["movie_id"] == 1
-    assert "Toy Story" in movie["title"]
+    assert movie["movie_id"] == 217465
+    assert "Tenet" in movie["title"]
     assert len(movie["genres"]) > 0
 
     # Test title search
-    search_res = repo.search_movies_by_title("Jumanji", limit=5)
+    search_res = repo.search_movies_by_title("Soul", limit=5)
     assert len(search_res) >= 1
-    assert any(m["movie_id"] == 2 for m in search_res)
+    assert any(m["movie_id"] == 225173 for m in search_res)
 
     # Test genres
-    genres = repo.get_genres_for_movie(1)
+    genres = repo.get_genres_for_movie(217465)
     assert len(genres) > 0
 
     # Test users who rated
-    users = repo.get_users_who_rated_movie(1, limit=5)
+    users = repo.get_users_who_rated_movie(217465, limit=5)
     assert len(users) > 0
 
 
@@ -59,18 +59,18 @@ def test_live_monetdb_repository_queries():
 
     repo = MonetDBRepository(db_manager=db_manager)
     # Test movie fetch
-    movie = repo.get_movie_by_id(1)
+    movie = repo.get_movie_by_id(217465)
     assert movie is not None
-    assert movie["movie_id"] == 1
-    assert "Toy Story" in movie["title"]
+    assert movie["movie_id"] == 217465
+    assert "Tenet" in movie["title"]
 
     # Test search
-    search_res = repo.search_movies_by_title("Toy", limit=5)
+    search_res = repo.search_movies_by_title("Tenet", limit=5)
     assert len(search_res) >= 1
 
     # Test stats
-    stats = repo.get_movie_rating_stats(1)
+    stats = repo.get_movie_rating_stats(217465)
     assert stats is not None
-    assert stats["movie_id"] == 1
+    assert stats["movie_id"] == 217465
     assert stats["rating_count"] > 0
     assert stats["avg_rating"] > 0.0

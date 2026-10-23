@@ -181,28 +181,28 @@ export default function AnalyticsDashboard() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <StatCard
                 title="Total Movies"
-                value={summary?.total_movies?.toLocaleString() ?? "1,000"}
-                subtitle="Development Sample"
+                value={summary?.total_movies?.toLocaleString() ?? "2,500"}
+                subtitle="2020–2023 Sample"
                 icon={Film}
                 engine="monetdb"
               />
               <StatCard
                 title="Total Ratings"
-                value={summary?.total_ratings?.toLocaleString() ?? "50,000"}
+                value={summary?.total_ratings?.toLocaleString() ?? "119,689"}
                 subtitle="Aggregated Fact Tuples"
                 icon={Star}
                 engine="monetdb"
               />
               <StatCard
                 title="Total Users"
-                value={summary?.total_users?.toLocaleString() ?? "2,364"}
-                subtitle="Distinct Raters"
+                value={summary?.total_users?.toLocaleString() ?? "18,327"}
+                subtitle="Distinct Users"
                 icon={Users}
                 engine="monetdb"
               />
               <StatCard
                 title="Distinct Genres"
-                value={summary?.total_genres?.toLocaleString() ?? "19"}
+                value={summary?.total_genres?.toLocaleString() ?? "16"}
                 subtitle="Categorical Dimensions"
                 icon={Tags}
                 engine="monetdb"

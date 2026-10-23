@@ -300,7 +300,7 @@ function MovieDetailsContent({ params }: PageProps) {
         ) : (
           <EmptyState
             title="No Similar Movies Found"
-            description="The graph topology for this movie did not return neighbors with sufficient similarity in the 1,000-movie development sample."
+            description="The graph topology for this movie did not return neighbors with sufficient similarity in the active 2,500-movie dataset sample."
           />
         )}
       </section>

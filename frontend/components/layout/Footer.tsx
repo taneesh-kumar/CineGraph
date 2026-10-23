@@ -17,7 +17,7 @@ export function Footer() {
             </p>
             <div className="inline-flex items-center gap-2 rounded-md bg-neutral-900/90 px-3 py-1.5 text-xs text-neutral-400 border border-neutral-800">
               <ShieldCheck className="h-3.5 w-3.5 text-indigo-400" />
-              <span>Development sample: 1,000 movies, 2,364 users, 50,000 ratings ingested.</span>
+              <span>Dataset sample: 2,500 movies (2020–2023), 18,327 users, 119,689 ratings ingested.</span>
             </div>
           </div>
 

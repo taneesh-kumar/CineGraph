@@ -156,7 +156,7 @@ export default function SystemStatusPage() {
 
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-neutral-400">Ingested Sample</span>
-                  <span className="font-mono text-neutral-200">1,000 Movies, 2,364 Users</span>
+                  <span className="font-mono text-neutral-200">2,500 Movies, 16,224 Graph Users</span>
                 </div>
               </div>
             </div>
@@ -199,7 +199,7 @@ export default function SystemStatusPage() {
 
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-neutral-400">Ingested Sample</span>
-                  <span className="font-mono text-neutral-200">50,000 Ratings, 10,000 Tags</span>
+                  <span className="font-mono text-neutral-200">119,689 Ratings, 25,999 Tags</span>
                 </div>
               </div>
             </div>

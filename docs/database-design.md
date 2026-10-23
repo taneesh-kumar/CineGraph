@@ -194,7 +194,7 @@ All aggregations are pushed down to MonetDB's columnar SQL engine:
 5. **Dataset Summary**:
    - Single-query count aggregation over `movies`, `movie_users`, `genres`, `ratings`, and `tags`.
 
-### 6.3 Development Sample Dataset Limitations
-- The active development baseline contains a verified sample of **1,000 movies**, **2,364 users**, **19 genres**, **50,000 ratings**, and **10,000 tags**.
-- Recommendation quality and collaborative overlaps reflect this 1,000-movie partition; rare/long-tail movies may have sparse peer ratings. Evaluation metrics in this phase represent structural validity rather than formal offline ML precision/recall benchmarks.
+### 6.3 Development Sample Dataset Scope
+- The active development baseline contains a verified sample of **2,500 movies** (2020–2023 release window), **18,327 users** (16,224 graph raters), **16 genres**, **119,689 ratings**, and **26,000 tags**.
+- Recommendation quality and collaborative overlaps reflect this 2,500-movie partition; rare/long-tail movies may have sparse peer ratings. Evaluation metrics in this phase represent structural validity rather than formal offline ML precision/recall benchmarks.
 
