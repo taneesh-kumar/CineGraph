@@ -198,3 +198,121 @@ class Neo4jRepository:
         except Exception as e:
             logger.error(f"Error fetching movies rated by user {user_id} from Neo4j: {e}")
             raise DatabaseQueryException("Neo4j", str(e)) from e
+
+    def get_similar_movies_by_genres(
+        self,
+        movie_id: int,
+        limit: int = 10,
+    ) -> List[Dict[str, Any]]:
+        """
+        Find candidate movies sharing genres with a given movie.
+        Excludes the source movie itself.
+        Returns candidate details including shared genre count, all candidate genres,
+        and rating count/average if present in graph.
+        """
+        cypher = """
+        MATCH (source:Movie {movieId: $movieId})-[:IN_GENRE]->(g:Genre)<-[:IN_GENRE]-(candidate:Movie)
+        WHERE candidate.movieId <> $movieId
+        WITH candidate, count(DISTINCT g) AS shared_genre_count, collect(DISTINCT g.name) AS shared_genres
+        ORDER BY shared_genre_count DESC, candidate.title ASC
+        LIMIT $candidate_pool
+        OPTIONAL MATCH (candidate)<-[r:RATED]-()
+        WITH candidate, shared_genre_count, shared_genres, count(r) AS rating_count, avg(r.rating) AS avg_rating
+        OPTIONAL MATCH (candidate)-[:IN_GENRE]->(cg:Genre)
+        RETURN candidate.movieId AS movie_id,
+               candidate.title AS title,
+               candidate.year AS year,
+               candidate.imdbId AS imdb_id,
+               candidate.tmdbId AS tmdb_id,
+               shared_genre_count,
+               shared_genres,
+               collect(DISTINCT cg.name) AS all_genres,
+               rating_count,
+               coalesce(avg_rating, 0.0) AS avg_rating
+        ORDER BY shared_genre_count DESC, avg_rating DESC, rating_count DESC, candidate.title ASC
+        LIMIT $limit
+        """
+        try:
+            with self.db_manager.get_neo4j_session() as session:
+                candidate_pool = max(limit * 5, 50)
+                result = session.run(
+                    cypher,
+                    movieId=movie_id,
+                    candidate_pool=candidate_pool,
+                    limit=limit,
+                )
+                candidates = []
+                for record in result:
+                    candidates.append({
+                        "movie_id": record["movie_id"],
+                        "title": record["title"],
+                        "year": record["year"],
+                        "imdb_id": record["imdb_id"],
+                        "tmdb_id": record["tmdb_id"],
+                        "shared_genre_count": record["shared_genre_count"],
+                        "shared_genres": sorted(record["shared_genres"]) if record["shared_genres"] else [],
+                        "genres": sorted(record["all_genres"]) if record["all_genres"] else [],
+                        "rating_count": record["rating_count"],
+                        "avg_rating": round(float(record["avg_rating"]), 2),
+                    })
+                return candidates
+        except Exception as e:
+            logger.error(f"Error finding similar movies for movie {movie_id} in Neo4j: {e}")
+            raise DatabaseQueryException("Neo4j", str(e)) from e
+
+    def get_collaborative_candidates(
+        self,
+        user_id: int,
+        min_user_rating: float = 3.5,
+        limit: int = 20,
+    ) -> List[Dict[str, Any]]:
+        """
+        Collaborative traversal:
+        Find candidate movies rated highly by peers who also rated movies highly rated by target user.
+        Excludes movies the target user has already rated.
+        """
+        cypher = """
+        MATCH (target:User {userId: $userId})-[r1:RATED]->(m:Movie)<-[r2:RATED]-(peer:User)
+        WHERE target <> peer AND r1.rating >= $minRating AND r2.rating >= $minRating
+        WITH target, peer, count(DISTINCT m) AS common_liked_count
+        WHERE common_liked_count >= 1
+        MATCH (peer)-[r3:RATED]->(rec:Movie)
+        WHERE r3.rating >= $minRating AND NOT (target)-[:RATED]->(rec)
+        OPTIONAL MATCH (rec)-[:IN_GENRE]->(g:Genre)
+        WITH rec, count(DISTINCT peer) AS peer_count, avg(r3.rating) AS peer_avg_rating, collect(DISTINCT g.name) AS genres
+        RETURN rec.movieId AS movie_id,
+               rec.title AS title,
+               rec.year AS year,
+               rec.imdbId AS imdb_id,
+               rec.tmdbId AS tmdb_id,
+               peer_count,
+               peer_avg_rating,
+               genres
+        ORDER BY peer_count DESC, peer_avg_rating DESC, rec.title ASC
+        LIMIT $limit
+        """
+        try:
+            with self.db_manager.get_neo4j_session() as session:
+                result = session.run(
+                    cypher,
+                    userId=user_id,
+                    minRating=min_user_rating,
+                    limit=limit,
+                )
+                candidates = []
+                for record in result:
+                    candidates.append({
+                        "movie_id": record["movie_id"],
+                        "title": record["title"],
+                        "year": record["year"],
+                        "imdb_id": record["imdb_id"],
+                        "tmdb_id": record["tmdb_id"],
+                        "peer_count": record["peer_count"],
+                        "peer_avg_rating": round(float(record["peer_avg_rating"]), 2),
+                        "genres": sorted(record["genres"]) if record["genres"] else [],
+                    })
+                return candidates
+        except Exception as e:
+            logger.error(f"Error fetching collaborative candidates for user {user_id} in Neo4j: {e}")
+            raise DatabaseQueryException("Neo4j", str(e)) from e
+

@@ -49,14 +49,15 @@
 
 ## 3. Technology Stack & Component Responsibilities
 
-### 3.1 Frontend (Next.js & Tailwind CSS)
-- **Framework**: Next.js (App Router), React, TypeScript.
-- **Styling**: Tailwind CSS for responsive and modern interface styling.
+### 3.1 Frontend (Next.js 16 App Router & Tailwind CSS v4)
+- **Framework**: Next.js 16.4.2 (App Router, Turbopack, Partial Prerendering), React 19.3.0, TypeScript 5.
+- **Styling**: Tailwind CSS v4 with dark cinematic palette and accessible design tokens.
 - **Role**:
-  - Delivers dynamic search and discovery UI.
-  - Interactive graph visualizations (future).
-  - Analytical charts and benchmark dashboards (future).
-  - *Strict Rule*: The browser communicates solely with the FastAPI backend; it **never** connects directly to Neo4j or MonetDB.
+  - Delivers dynamic search and movie discovery UI (`/movies` and `/movies/[movieId]`).
+  - Interactive graph-driven recommendation interface (`/recommendations`) for Item Jaccard similarity and User collaborative filtering.
+  - Columnar analytics dashboard (`/analytics`) with dataset summary metrics, top-rated threshold ranking, genre popularity bar charts, and rating distribution histograms.
+  - Real-time diagnostic and readiness monitor (`/system`).
+  - *Strict Rule*: The browser communicates solely with the FastAPI backend; it **never** connects directly to Neo4j or MonetDB, nor does it receive database credentials.
 
 ### 3.2 Backend (FastAPI & Python)
 - **Framework**: FastAPI with clean layered separation of concerns.
@@ -106,12 +107,15 @@
 | **Repository Structure** | Implemented | Monorepo layout with `frontend`, `backend`, `docker`, `docs` |
 | **FastAPI Skeleton** | Implemented | Health endpoint (`GET /health`), Root info endpoint (`GET /`), typed configuration |
 | **Backend Foundation & DB Access** | Implemented (Phase 3.1) | `DatabaseManager`, Neo4jRepository, MonetDBRepository, `/ready` probe, custom exception hierarchy |
+| **Recommendation Engine (Service)**| Implemented (Phase 3.2) | `RecommendationService`: explainable graph genre & collaborative peer recommendations |
+| **Analytics Engine (Service)**     | Implemented (Phase 3.2) | `AnalyticsService`: in-database columnar aggregations, distributions, and stats |
 | **Frontend Foundation** | Implemented | Next.js App Router with TypeScript & Tailwind CSS, clean CineGraph hero layout |
 | **Docker Compose** | Implemented | Orchestrates Neo4j Community & MonetDB with persisted volumes and port bindings |
 | **Database Adapters** | Implemented | Python drivers (`neo4j` and `pymonetdb`) connection integration verified |
 | **MovieLens ETL** | Implemented | Streaming, idempotent dual-database ingestion pipeline with preflight and sample modes |
 | **Integrity Verification** | Implemented | Automated verification checking counts, foreign keys, and sample queries |
-| **Analytics Dashboard** | Planned | Recharts / Chart.js integration displaying MonetDB aggregated stats |
-| **Recommendation Engine**| Planned | Cypher graph queries and personalized recommendation endpoints |
-| **Performance Benchmark**| Planned | Execution-time comparative evaluation framework |
+| **REST Endpoints (API Routes)**    | Implemented (Phase 3.3) | `/api/v1/recommendations/*` and `/api/v1/analytics/*` REST API |
+| **Phase 3 Verification & Benchmark**| Implemented (Phase 3.4) | 57 automated tests passed, latency benchmark measured, cross-engine integrity verified |
+| **Analytics Dashboard (UI)**       | Planned (Phase 4)       | Recharts / Chart.js integration displaying MonetDB aggregated stats |
+| **Performance Benchmark (Full)**   | Planned (Phase 4)       | Full-dataset comparative evaluation framework across Neo4j and MonetDB |
 

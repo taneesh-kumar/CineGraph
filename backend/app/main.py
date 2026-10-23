@@ -14,6 +14,9 @@ from app.core.exceptions import (
     InvalidInputException,
 )
 from app.api.health import router as health_router
+from app.api.recommendations import router as recommendations_router
+from app.api.analytics import router as analytics_router
+from app.api.movies import router as movies_router
 
 logger = logging.getLogger("cinegraph-api")
 settings = get_settings()
@@ -107,6 +110,9 @@ app.include_router(health_router)
 
 # 2. Versioned API prefix (/api/v1)
 app.include_router(health_router, prefix="/api/v1")
+app.include_router(recommendations_router, prefix="/api/v1")
+app.include_router(analytics_router, prefix="/api/v1")
+app.include_router(movies_router, prefix="/api/v1")
 
 
 @app.get("/")

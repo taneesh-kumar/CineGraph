@@ -1,0 +1,92 @@
+[
+  {
+    "endpoint_name": "Liveness Probe",
+    "path": "/api/v1/health",
+    "repetitions": 10,
+    "cold_ms": 1.78,
+    "mean_warm_ms": 0.68,
+    "median_warm_ms": 0.67,
+    "min_ms": 0.63,
+    "max_ms": 1.78
+  },
+  {
+    "endpoint_name": "Readiness Probe",
+    "path": "/api/v1/ready",
+    "repetitions": 10,
+    "cold_ms": 8.39,
+    "mean_warm_ms": 6.71,
+    "median_warm_ms": 6.23,
+    "min_ms": 5.35,
+    "max_ms": 9.28
+  },
+  {
+    "endpoint_name": "Similar-Movie Recommendations",
+    "path": "/api/v1/recommendations/movie/1?limit=10",
+    "repetitions": 10,
+    "cold_ms": 12.3,
+    "mean_warm_ms": 15.59,
+    "median_warm_ms": 13.45,
+    "min_ms": 11.43,
+    "max_ms": 28.91
+  },
+  {
+    "endpoint_name": "Personalized Recommendations",
+    "path": "/api/v1/recommendations/user/1?limit=10",
+    "repetitions": 10,
+    "cold_ms": 131.8,
+    "mean_warm_ms": 134.22,
+    "median_warm_ms": 131.47,
+    "min_ms": 128.6,
+    "max_ms": 149.0
+  },
+  {
+    "endpoint_name": "Top-Rated Movies",
+    "path": "/api/v1/analytics/top-rated?min_ratings=20&limit=20",
+    "repetitions": 10,
+    "cold_ms": 107.07,
+    "mean_warm_ms": 111.33,
+    "median_warm_ms": 112.19,
+    "min_ms": 104.51,
+    "max_ms": 116.42
+  },
+  {
+    "endpoint_name": "Genre Popularity",
+    "path": "/api/v1/analytics/genres",
+    "repetitions": 10,
+    "cold_ms": 15.38,
+    "mean_warm_ms": 13.21,
+    "median_warm_ms": 12.99,
+    "min_ms": 11.7,
+    "max_ms": 16.47
+  },
+  {
+    "endpoint_name": "Rating Distribution",
+    "path": "/api/v1/analytics/ratings/distribution",
+    "repetitions": 10,
+    "cold_ms": 6.06,
+    "mean_warm_ms": 7.11,
+    "median_warm_ms": 6.49,
+    "min_ms": 5.84,
+    "max_ms": 9.51
+  },
+  {
+    "endpoint_name": "Movie Rating Statistics",
+    "path": "/api/v1/analytics/movies/1/ratings",
+    "repetitions": 10,
+    "cold_ms": 11.16,
+    "mean_warm_ms": 13.15,
+    "median_warm_ms": 13.2,
+    "min_ms": 11.16,
+    "max_ms": 15.03
+  },
+  {
+    "endpoint_name": "Dataset Summary",
+    "path": "/api/v1/analytics/summary",
+    "repetitions": 10,
+    "cold_ms": 7.5,
+    "mean_warm_ms": 8.44,
+    "median_warm_ms": 8.51,
+    "min_ms": 7.23,
+    "max_ms": 9.14
+  }
+]

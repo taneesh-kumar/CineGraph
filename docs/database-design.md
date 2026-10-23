@@ -161,3 +161,40 @@ RETURN rec.title AS recommended_movie, count(u2) AS recommendation_strength
 ORDER BY recommendation_strength DESC
 LIMIT 10;
 ```
+
+---
+
+## 6. Phase 3.2 Services Architecture & Logic
+
+### 6.1 Recommendation Service (`RecommendationService`)
+The recommendation service uses Neo4j's graph topology for explainable, deterministic recommendations without heavy machine learning:
+1. **Similar-Movie Recommendations (Content/Genre Similarity)**:
+   - Traverses `(source:Movie)-[:IN_GENRE]->(g:Genre)<-[:IN_GENRE]-(candidate:Movie)`.
+   - Excludes the source movie (`candidate.movieId <> $movieId`).
+   - Scoring Formula: `score = (shared_genre_count * 2.0) + (avg_rating * 0.5)`.
+   - Explanation: Generates explicit explanation detailing the exact shared genres and average rating evidence.
+2. **User-Personalized Recommendations (Collaborative Signals & Genre Expansion)**:
+   - Identifies peers who rated the same movies favorably (`rating >= 3.5`).
+   - Retrieves candidates liked by peers (`rating >= 3.5`) that the target user has not yet rated.
+   - Scoring Formula: `score = (peer_count * 1.5) + (peer_avg_rating * 1.0)`.
+   - Fallback: If collaborative signals are sparse, expands recommendations based on genres of the user's highest-rated movie.
+   - Explanation: Details peer agreement count and peer average rating.
+
+### 6.2 MonetDB Analytics Service (`AnalyticsService`)
+All aggregations are pushed down to MonetDB's columnar SQL engine:
+1. **Top-Rated Movies**:
+   - `SELECT m.movie_id, m.title, m.release_year, COUNT(r.rating) AS rating_count, ROUND(AVG(r.rating), 2) AS avg_rating ... HAVING COUNT(r.rating) >= $min_ratings`.
+   - Enforces a minimum rating count (default 10) to eliminate low-sample bias.
+2. **Genre Popularity**:
+   - Computes `COUNT(r.rating)` (total rating events), `COUNT(DISTINCT m.movie_id)` (distinct movies rated), and `ROUND(AVG(r.rating), 2)` per genre.
+3. **Rating Distribution**:
+   - Computes the frequency count and percentage share across discrete rating increments (`0.5` through `5.0`).
+4. **Movie Rating Statistics**:
+   - Evaluates single-movie `COUNT(rating)` and `AVG(rating)`.
+5. **Dataset Summary**:
+   - Single-query count aggregation over `movies`, `movie_users`, `genres`, `ratings`, and `tags`.
+
+### 6.3 Development Sample Dataset Limitations
+- The active development baseline contains a verified sample of **1,000 movies**, **2,364 users**, **19 genres**, **50,000 ratings**, and **10,000 tags**.
+- Recommendation quality and collaborative overlaps reflect this 1,000-movie partition; rare/long-tail movies may have sparse peer ratings. Evaluation metrics in this phase represent structural validity rather than formal offline ML precision/recall benchmarks.
+
