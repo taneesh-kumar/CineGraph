@@ -100,8 +100,8 @@ CREATE TABLE IF NOT EXISTS movie_links (
     FOREIGN KEY (movie_id) REFERENCES movies(movie_id)
 );
 
--- Users Dimension Table
-CREATE TABLE IF NOT EXISTS users (
+-- Users Dimension Table (Named movie_users to avoid collision with MonetDB sys.users catalog)
+CREATE TABLE IF NOT EXISTS movie_users (
     user_id INT,
     PRIMARY KEY (user_id)
 );
@@ -113,15 +113,19 @@ CREATE TABLE IF NOT EXISTS ratings (
     rating DECIMAL(2,1) NOT NULL,
     rated_at TIMESTAMP,
     PRIMARY KEY (user_id, movie_id),
-    FOREIGN KEY (movie_id) REFERENCES movies(movie_id)
+    FOREIGN KEY (movie_id) REFERENCES movies(movie_id),
+    FOREIGN KEY (user_id) REFERENCES movie_users(user_id)
 );
 
--- Tags Fact Table
+-- Tags Fact Table (Composite PK ensures idempotency on pipeline reruns)
 CREATE TABLE IF NOT EXISTS tags (
     user_id INT,
     movie_id INT,
     tag VARCHAR(512) NOT NULL,
-    tagged_at TIMESTAMP
+    tagged_at TIMESTAMP,
+    PRIMARY KEY (user_id, movie_id, tag),
+    FOREIGN KEY (movie_id) REFERENCES movies(movie_id),
+    FOREIGN KEY (user_id) REFERENCES movie_users(user_id)
 );
 ```
 

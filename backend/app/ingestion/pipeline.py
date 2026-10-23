@@ -177,7 +177,7 @@ class IngestionPipeline:
         Returns the set of user IDs that were referenced and loaded.
         """
         ratings_csv = os.path.join(self.dataset_dir, "ratings.csv")
-        ingested_user_ids: Set[int] = set()
+        loaded_user_ids: Set[int] = set()
 
         neo4j_batch = []
         monetdb_batch = []
@@ -201,7 +201,6 @@ class IngestionPipeline:
                     continue
 
                 self.metrics["ratings"]["read"] += 1
-                ingested_user_ids.add(user_id)
                 user_batch.add(user_id)
                 rated_at_dt = Transformers.parse_timestamp(str(ts_int)) if ts_int else None
 
@@ -219,6 +218,7 @@ class IngestionPipeline:
                     self.neo4j.load_ratings_batch(neo4j_batch)
                     self.monetdb.load_ratings_batch(monetdb_batch)
                     self.metrics["ratings"]["loaded"] += len(neo4j_batch)
+                    loaded_user_ids.update(user_batch)
                     neo4j_batch.clear()
                     monetdb_batch.clear()
                     user_batch.clear()
@@ -232,9 +232,10 @@ class IngestionPipeline:
             self.neo4j.load_ratings_batch(neo4j_batch)
             self.monetdb.load_ratings_batch(monetdb_batch)
             self.metrics["ratings"]["loaded"] += len(neo4j_batch)
+            loaded_user_ids.update(user_batch)
 
-        logger.info(f"Ratings loaded: {self.metrics['ratings']['loaded']} from {len(ingested_user_ids)} users.")
-        return ingested_user_ids
+        logger.info(f"Ratings loaded: {self.metrics['ratings']['loaded']} from {len(loaded_user_ids)} users.")
+        return loaded_user_ids
 
     def ingest_tags(self, valid_movie_ids: Set[int], valid_user_ids: Set[int]):
         """Stream and ingest user tags."""
