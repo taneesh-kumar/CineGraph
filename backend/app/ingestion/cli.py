@@ -37,6 +37,18 @@ def main():
         help="Limit number of movies loaded for sample mode (0 = full dataset)",
     )
     parser.add_argument(
+        "--min-year",
+        type=int,
+        default=None,
+        help="Filter movies to only those released on or after this year (e.g. 2020)",
+    )
+    parser.add_argument(
+        "--max-year",
+        type=int,
+        default=None,
+        help="Filter movies to only those released on or before this year (e.g. 2023)",
+    )
+    parser.add_argument(
         "--validate-only",
         action="store_true",
         help="Only validate dataset files without ingesting into databases",
@@ -54,6 +66,8 @@ def main():
     logger.info(f"Dataset Directory: {dataset_dir}")
     logger.info(f"Batch Size: {batch_size}")
     logger.info(f"Sample Limit: {'FULL DATASET' if sample_limit == 0 else f'{sample_limit} movies'}")
+    if args.min_year or args.max_year:
+        logger.info(f"Year Filter: {args.min_year or 'any'} to {args.max_year or 'any'}")
     logger.info("=" * 60)
 
     validator = DatasetValidator(dataset_dir)
@@ -93,6 +107,8 @@ def main():
             monetdb_loader=monetdb_loader,
             batch_size=batch_size,
             sample_limit=sample_limit,
+            min_year=args.min_year,
+            max_year=args.max_year,
         )
         results = pipeline.run()
 

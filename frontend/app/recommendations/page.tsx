@@ -19,18 +19,18 @@ import { ErrorState } from "@/components/ui/ErrorState";
 import { EmptyState } from "@/components/ui/EmptyState";
 
 const SAMPLE_MOVIES = [
-  { id: 1, title: "Toy Story (1995)" },
-  { id: 260, title: "Star Wars: Episode IV (1977)" },
-  { id: 296, title: "Pulp Fiction (1994)" },
-  { id: 318, title: "Shawshank Redemption (1994)" },
-  { id: 2571, title: "Matrix, The (1999)" },
+  { id: 217465, title: "Tenet (2020)" },
+  { id: 225173, title: "Soul (2020)" },
+  { id: 210861, title: "The Gentlemen (2020)" },
+  { id: 218537, title: "Palm Springs (2020)" },
+  { id: 219994, title: "The Father (2020)" },
 ];
 
 const SAMPLE_USERS = [
-  { id: 1, label: "User #1 (Active rater)" },
-  { id: 42, label: "User #42" },
-  { id: 100, label: "User #100" },
-  { id: 200, label: "User #200" },
+  { id: 57304, label: "User #57304 (368 ratings)" },
+  { id: 139018, label: "User #139018 (339 ratings)" },
+  { id: 8901, label: "User #8901 (337 ratings)" },
+  { id: 8359, label: "User #8359 (203 ratings)" },
 ];
 
 function RecommendationsContent() {
@@ -80,8 +80,8 @@ function RecommendationsContent() {
         executeRecommendation("movie", parsed, limit);
       }
     } else {
-      // Run default Toy Story recommendation
-      executeRecommendation("movie", 1, 10);
+      // Run default recommendation (Tenet)
+      executeRecommendation("movie", 217465, 10);
     }
   }, [initialMovieParam]);
 

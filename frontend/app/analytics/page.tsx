@@ -544,10 +544,10 @@ export default function AnalyticsDashboard() {
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <span className="text-neutral-500">Sample Movie IDs:</span>
               {[
-                { id: "1", title: "Toy Story (ID 1)" },
-                { id: "296", title: "Pulp Fiction (ID 296)" },
-                { id: "318", title: "Shawshank (ID 318)" },
-                { id: "2571", title: "Matrix (ID 2571)" },
+                { id: "217465", title: "Tenet (ID 217465)" },
+                { id: "225173", title: "Soul (ID 225173)" },
+                { id: "210861", title: "The Gentlemen (ID 210861)" },
+                { id: "218537", title: "Palm Springs (ID 218537)" },
               ].map((chip) => (
                 <button
                   key={chip.id}

@@ -128,7 +128,7 @@ export default function MoviesPage() {
           title={query ? `No movies matching "${query}"` : "No movies found"}
           description={
             query
-              ? "The 1,000-movie development sample may not include this title. Try searching for 'Toy Story', 'Matrix', 'Pulp Fiction', or 'Star Wars'."
+              ? "The 2,500-movie (2020-2023) sample may not include this title. Try searching for 'Tenet', 'Soul', 'The Gentlemen', or 'Palm Springs'."
               : "No movies could be retrieved from the database."
           }
           actionLabel="Clear Search"

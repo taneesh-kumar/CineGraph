@@ -23,12 +23,16 @@ class IngestionPipeline:
         monetdb_loader: MonetDBLoader,
         batch_size: int = 5000,
         sample_limit: int = 0,
+        min_year: Optional[int] = None,
+        max_year: Optional[int] = None,
     ):
         self.dataset_dir = dataset_dir
         self.neo4j = neo4j_loader
         self.monetdb = monetdb_loader
         self.batch_size = batch_size
         self.sample_limit = sample_limit
+        self.min_year = min_year
+        self.max_year = max_year
         self.validator = DatasetValidator(dataset_dir)
         self.metrics: Dict[str, Dict[str, int]] = {
             "movies": {"read": 0, "loaded": 0, "skipped": 0},
@@ -75,6 +79,17 @@ class IngestionPipeline:
 
                 self.metrics["movies"]["read"] += 1
                 clean_title, release_year = Transformers.extract_year_and_title(raw_title)
+
+                # Year range filtering
+                if self.min_year is not None:
+                    if release_year is None or release_year < self.min_year:
+                        self.metrics["movies"]["skipped"] += 1
+                        continue
+                if self.max_year is not None:
+                    if release_year is None or release_year > self.max_year:
+                        self.metrics["movies"]["skipped"] += 1
+                        continue
+
                 genres = Transformers.parse_genres(row.get("genres", ""))
                 for g in genres:
                     all_unique_genres.add(g)

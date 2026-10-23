@@ -10,13 +10,13 @@ interface MovieSearchProps {
   placeholder?: string;
 }
 
-const SAMPLE_QUERIES = ["Toy Story", "Matrix", "Pulp Fiction", "Star Wars", "Jurassic Park"];
+const SAMPLE_QUERIES = ["Tenet", "Soul", "The Gentlemen", "Palm Springs", "Dune"];
 
 export function MovieSearch({
   onSearch,
   isLoading = false,
   initialQuery = "",
-  placeholder = "Search movies by title (e.g. Toy Story, Matrix)...",
+  placeholder = "Search movies by title (e.g. Tenet, Soul, Palm Springs)...",
 }: MovieSearchProps) {
   const [value, setValue] = useState(initialQuery);
 
