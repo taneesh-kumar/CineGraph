@@ -1,0 +1,28 @@
+{
+  "run_id": "20261023_183635",
+  "timestamp": "2026-10-23T18:36:44.125407",
+  "git_commit": null,
+  "python_version": "3.11.9",
+  "dataset_metadata": {
+    "movies": 2500,
+    "ratings": 119689,
+    "users": 18327,
+    "genres": 16,
+    "release_window": "2020-2023"
+  },
+  "config": {
+    "warmup_iterations": 2,
+    "measured_iterations": 5,
+    "concurrency_levels": [
+      1,
+      2,
+      5,
+      10
+    ],
+    "timeout_seconds": 30.0,
+    "random_seed": 42,
+    "output_dir": "../reports/phase-5/results"
+  },
+  "summary_metrics_file": "..\\reports\\phase-5\\results\\run-20261023_183635\\benchmark-summary.json",
+  "raw_measurements_file": "..\\reports\\phase-5\\results\\run-20261023_183635\\raw-benchmarks.csv"
+}

@@ -1,0 +1,46 @@
+[
+  {
+    "model_name": "Global Popularity Baseline",
+    "k": 5,
+    "precision": 0.1182,
+    "recall": 0.0864,
+    "ndcg": 0.1174,
+    "hit_rate": 0.5,
+    "catalog_coverage": 1.4,
+    "eligible_users_count": 22,
+    "evaluated_interactions_count": 172
+  },
+  {
+    "model_name": "Global Popularity Baseline",
+    "k": 10,
+    "precision": 0.1182,
+    "recall": 0.1421,
+    "ndcg": 0.1394,
+    "hit_rate": 0.6364,
+    "catalog_coverage": 1.4,
+    "eligible_users_count": 22,
+    "evaluated_interactions_count": 172
+  },
+  {
+    "model_name": "CineGraph Collaborative Model",
+    "k": 5,
+    "precision": 0.1455,
+    "recall": 0.089,
+    "ndcg": 0.132,
+    "hit_rate": 0.4545,
+    "catalog_coverage": 1.28,
+    "eligible_users_count": 22,
+    "evaluated_interactions_count": 172
+  },
+  {
+    "model_name": "CineGraph Collaborative Model",
+    "k": 10,
+    "precision": 0.1136,
+    "recall": 0.1478,
+    "ndcg": 0.1363,
+    "hit_rate": 0.6364,
+    "catalog_coverage": 1.28,
+    "eligible_users_count": 22,
+    "evaluated_interactions_count": 172
+  }
+]

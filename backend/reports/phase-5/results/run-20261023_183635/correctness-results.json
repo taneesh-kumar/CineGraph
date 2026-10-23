@@ -1,0 +1,20 @@
+[
+  {
+    "workload_id": "workload_a_lookup",
+    "operation": "lookup_movie_by_id",
+    "neo4j_count": 1,
+    "monetdb_count": 1,
+    "counts_match": true,
+    "data_matches": true,
+    "discrepancy_details": null
+  },
+  {
+    "workload_id": "workload_c_genres",
+    "operation": "get_movie_genres",
+    "neo4j_count": 2,
+    "monetdb_count": 2,
+    "counts_match": true,
+    "data_matches": true,
+    "discrepancy_details": null
+  }
+]
