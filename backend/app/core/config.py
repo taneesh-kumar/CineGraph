@@ -1,12 +1,19 @@
+import os
 from functools import lru_cache
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Determine repository root (two levels up from backend/app/core)
+BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
+REPO_ROOT = BACKEND_DIR.parent
+DEFAULT_DATASET_DIR = str(REPO_ROOT / "data" / "raw" / "ml-32m")
 
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
     PROJECT_NAME: str = "CineGraph API"
-    VERSION: str = "0.1.0"
+    VERSION: str = "0.2.0"
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
 
@@ -20,19 +27,24 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3000",
     ]
 
-    # Database configuration placeholders (for future adapter integration)
+    # Database configuration
     NEO4J_URI: str = "bolt://localhost:7687"
     NEO4J_USER: str = "neo4j"
-    NEO4J_PASSWORD: str = ""
+    NEO4J_PASSWORD: str = "cinegraph_neo4j_secret_change_me"
 
     MONETDB_HOST: str = "localhost"
     MONETDB_PORT: int = 50000
     MONETDB_DATABASE: str = "cinegraph"
     MONETDB_USER: str = "monetdb"
-    MONETDB_PASSWORD: str = ""
+    MONETDB_PASSWORD: str = "cinegraph_monetdb_secret_change_me"
+
+    # Ingestion configuration
+    DATASET_DIR: str = DEFAULT_DATASET_DIR
+    INGESTION_BATCH_SIZE: int = 5000
+    INGESTION_SAMPLE_LIMIT: int = 0  # 0 means full import, > 0 sets row/movie limit
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=str(REPO_ROOT / ".env"),
         env_file_encoding="utf-8",
         extra="ignore",
     )

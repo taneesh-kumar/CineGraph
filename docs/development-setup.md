@@ -60,7 +60,7 @@ docker compose down
 
 ---
 
-## 4. Backend Setup (FastAPI)
+## 4. Backend Setup & Ingestion Pipeline
 
 ### 4.1 Setup Virtual Environment
 ```powershell
@@ -85,7 +85,31 @@ pip install -r requirements.txt
 pytest
 ```
 
-### 4.4 Start Development Server
+### 4.4 Ingesting MovieLens 32M Data
+
+CineGraph includes a streaming, idempotent data ingestion pipeline that synchronizes `ml-32m` into both databases.
+
+#### Preflight Dataset Validation Only
+```powershell
+python -m app.ingestion.cli --validate-only
+```
+
+#### Running a Development Sample Import (e.g. 1,000 Movies)
+```powershell
+python -m app.ingestion.cli --sample-limit 1000 --batch-size 1000
+```
+
+#### Running Full MovieLens 32M Ingestion
+```powershell
+python -m app.ingestion.cli --sample-limit 0 --batch-size 5000
+```
+
+#### Verifying Database Integrity & Cross-Engine Consistency
+```powershell
+python -m app.ingestion.verify
+```
+
+### 4.5 Start Development Server
 ```powershell
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```

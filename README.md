@@ -147,7 +147,29 @@ uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 
 ---
 
-### Step 4: Start the Frontend (Next.js)
+### Step 4: Run MovieLens Data Ingestion (Phase 2)
+
+CineGraph includes a streaming, idempotent data ingestion pipeline that synchronizes `ml-32m` into both Neo4j and MonetDB.
+
+```bash
+cd backend
+
+# 1. Validate dataset preflight integrity
+python -m app.ingestion.cli --validate-only
+
+# 2. Ingest development sample (e.g. 1,000 movies and corresponding ratings/tags)
+python -m app.ingestion.cli --sample-limit 1000 --batch-size 1000
+
+# 3. Verify cross-database integrity and consistency
+python -m app.ingestion.verify
+
+# 4. Optional: Ingest full dataset (32M ratings, bounded batches)
+# python -m app.ingestion.cli --sample-limit 0 --batch-size 5000
+```
+
+---
+
+### Step 5: Start the Frontend (Next.js)
 
 In another terminal:
 
@@ -199,8 +221,9 @@ docker compose down -v
 | **FastAPI Skeleton** | ✅ Completed | Health endpoint (`GET /health`), root metadata, config management, pytest suite |
 | **Frontend Foundation** | ✅ Completed | Next.js App Router, Tailwind CSS, type-checked placeholder UI |
 | **Docker Compose** | ✅ Completed | Isolated Neo4j Community & MonetDB with localhost bindings & volumes |
-| **Database Adapters** | ⏳ Deferred | Python drivers (`neo4j-python-driver` & `pymonetdb`) connection integration |
-| **MovieLens ETL** | ⏳ Deferred | CSV ingestion scripts for dual-database loading |
-| **Recommendation Engine**| ⏳ Deferred | Cypher graph queries and personalized recommendation endpoints |
-| **Analytics Dashboard** | ⏳ Deferred | Visual charts displaying MonetDB aggregated statistics |
-| **Performance Benchmark**| ⏳ Deferred | Comparative execution-time evaluation framework |
+| **Database Adapters** | ✅ Completed | Python drivers (`neo4j` & `pymonetdb`) connection integration verified |
+| **MovieLens ETL** | ✅ Completed | Streaming, idempotent dual-database ingestion pipeline with preflight and sample modes |
+| **Integrity Verification** | ✅ Completed | Automated verification checking counts, foreign keys, and sample queries |
+| **Recommendation Engine**| ⏳ Planned | Cypher graph queries and personalized recommendation endpoints |
+| **Analytics Dashboard** | ⏳ Planned | Visual charts displaying MonetDB aggregated statistics |
+| **Performance Benchmark**| ⏳ Planned | Comparative execution-time evaluation framework |

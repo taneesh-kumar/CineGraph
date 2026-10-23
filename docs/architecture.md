@@ -83,11 +83,12 @@
   - High-throughput aggregation of millions of user ratings.
   - Comparative benchmark queries against row-based and graph-based aggregations.
 
-### 3.5 Ingestion Pipeline (Planned)
-- Ingests raw MovieLens datasets (CSV files: `movies.csv`, `ratings.csv`, `tags.csv`, `links.csv`).
-- Sanitizes and structures data for dual ingestion:
-  - Generates Cypher statements / batch import files for Neo4j.
-  - Generates COPY INTO / bulk SQL loads for MonetDB tables.
+### 3.5 Ingestion Pipeline (Implemented in Phase 2)
+- Ingests raw MovieLens 32M datasets (`movies.csv`, `ratings.csv`, `tags.csv`, `links.csv`).
+- Sanitizes and structures data for streaming dual ingestion:
+  - Generates parameterized, idempotent batch Cypher queries for Neo4j (`MERGE`).
+  - Executes batch parameterized SQL inserts for MonetDB relational tables (`INSERT INTO ...`).
+- Supports preflight schema validation, small-sample mode, and idempotency across repeated runs.
 
 ---
 
@@ -99,8 +100,9 @@
 | **FastAPI Skeleton** | Implemented | Health endpoint (`GET /health`), Root info endpoint (`GET /`), typed configuration |
 | **Frontend Foundation** | Implemented | Next.js App Router with TypeScript & Tailwind CSS, clean CineGraph hero layout |
 | **Docker Compose** | Implemented | Orchestrates Neo4j Community & MonetDB with persisted volumes and port bindings |
-| **Database Adapters** | Planned | Python drivers (`neo4j-python-driver` and `pymonetdb`) integration |
-| **MovieLens ETL** | Planned | Data preprocessing and ingestion scripts for dual-database loading |
+| **Database Adapters** | Implemented | Python drivers (`neo4j` and `pymonetdb`) connection integration verified |
+| **MovieLens ETL** | Implemented | Streaming, idempotent dual-database ingestion pipeline with preflight and sample modes |
+| **Integrity Verification** | Implemented | Automated verification checking counts, foreign keys, and sample queries |
 | **Analytics Dashboard** | Planned | Recharts / Chart.js integration displaying MonetDB aggregated stats |
 | **Recommendation Engine**| Planned | Cypher graph queries and personalized recommendation endpoints |
 | **Performance Benchmark**| Planned | Execution-time comparative evaluation framework |

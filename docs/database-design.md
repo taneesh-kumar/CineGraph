@@ -1,6 +1,6 @@
-# CineGraph Database Design & Data Modeling
+# CineGraph Database Design & Data Modeling (Phase 2 Final)
 
-This document outlines the data model for the two core database technologies powering CineGraph: **Neo4j** (Graph Database) and **MonetDB** (Column-Store Analytical Database).
+This document specifies the shared data models for **Neo4j** (Graph Database) and **MonetDB** (Column-Store Analytical Database), designed for the **MovieLens 32M** dataset.
 
 ---
 
@@ -10,73 +10,80 @@ This document outlines the data model for the two core database technologies pow
 |---|---|---|
 | **Primary Focus** | Deep relational traversals, entity connectivity, personalized recommendations | High-throughput columnar aggregation, filtering across millions of records |
 | **Query Language** | Cypher | SQL |
-| **Optimized For** | Variable-length paths, "who acted with whom", graph centrality | `AVG()`, `COUNT()`, `GROUP BY`, percentile statistics across release years and genres |
-| **Typical Operation** | "Find 5 movies similar to Interstellar based on director and actor overlap" | "Calculate average rating trend per genre between 1990 and 2020" |
+| **Optimized For** | Variable-length paths, collaborative filtering, graph centrality | `AVG()`, `COUNT()`, `GROUP BY`, percentile statistics across release years and genres |
+| **Storage Structure** | Property Graph (Nodes & Directed Relationships with Properties) | Normalized Relational Columnar Store (Values stored contiguously by column) |
+| **Typical Operation** | "Find movies recommended to User 42 based on users with similar rating patterns" | "Calculate average rating trend per genre between 1990 and 2024 across 32M ratings" |
 
 ---
 
-## 2. Neo4j Graph Model
+## 2. Shared Identity Rules
 
-### 2.1 Nodes (Labels & Key Properties)
+To ensure academic rigor and coherent cross-engine querying:
+1. **Source Identifiers**: The MovieLens `movieId` and `userId` integer keys are strictly preserved and identical in both databases.
+2. **Deterministic Genres**: Genre names (e.g. `Action`, `Sci-Fi`, `Drama`) match identically between Neo4j `(:Genre {name: ...})` nodes and MonetDB `genres.name` column.
+3. **External Identifiers**: `imdbId` and `tmdbId` are preserved as string identifiers in both databases, differentiating missing values (`NULL`) from valid IDs.
+4. **No Cast/Crew Fabrication**: MovieLens 32M does not include cast/director CSVs in this release; hence no fictitious Person/Actor nodes are generated.
+
+---
+
+## 3. Neo4j Graph Model
+
+### 3.1 Nodes (Labels & Key Properties)
 
 - **`:Movie`**
-  - `movieId: Int` (Unique Index)
+  - `movieId: Int` (Unique Constraint)
   - `title: String`
-  - `releaseYear: Int`
-  - `imdbId: String`
-  - `tmdbId: String`
-
-- **`:Person`** (or specialized `:Actor`, `:Director`)
-  - `personId: String`
-  - `name: String`
+  - `year: Int` (or `null`)
+  - `imdbId: String` (or `null`)
+  - `tmdbId: String` (or `null`)
 
 - **`:Genre`**
-  - `name: String` (Unique Index, e.g., "Action", "Sci-Fi", "Drama")
+  - `name: String` (Unique Constraint, e.g., "Action", "Sci-Fi", "Comedy")
 
 - **`:User`**
-  - `userId: Int` (Unique Index)
+  - `userId: Int` (Unique Constraint)
 
-### 2.2 Relationships (Edges & Properties)
+### 3.2 Relationships (Edges & Properties)
 
-- `(:Person)-[:ACTED_IN { character: String }]->(:Movie)`
-- `(:Person)-[:DIRECTED]->(:Movie)`
-- `(:Movie)-[:BELONGS_TO]->(:Genre)`
-- `(:User)-[:RATED { rating: Float, timestamp: Int }]->(:Movie)`
-- `(:User)-[:TAGGED { tag: String, timestamp: Int }]->(:Movie)`
+- `(Movie)-[:IN_GENRE]->(Genre)`
+- `(User)-[:RATED { rating: Float, timestamp: Int }]->(Movie)`
+- `(User)-[:TAGGED { tag: String, timestamp: Int }]->(Movie)`
 
-### 2.3 Key Indexes & Constraints
+### 3.3 Constraints & Indexes
+
 ```cypher
-CREATE CONSTRAINT movie_id_unique FOR (m:Movie) REQUIRE m.movieId IS UNIQUE;
-CREATE CONSTRAINT user_id_unique FOR (u:User) REQUIRE u.userId IS UNIQUE;
-CREATE INDEX genre_name_idx FOR (g:Genre) ON (g.name);
+CREATE CONSTRAINT movie_id_unique IF NOT EXISTS FOR (m:Movie) REQUIRE m.movieId IS UNIQUE;
+CREATE CONSTRAINT user_id_unique IF NOT EXISTS FOR (u:User) REQUIRE u.userId IS UNIQUE;
+CREATE CONSTRAINT genre_name_unique IF NOT EXISTS FOR (g:Genre) REQUIRE g.name IS UNIQUE;
+CREATE INDEX movie_title_idx IF NOT EXISTS FOR (m:Movie) ON (m.title);
 ```
 
 ---
 
-## 3. MonetDB Analytical Schema
+## 4. MonetDB Analytical Schema
 
 MonetDB stores normalized columnar tables for ultra-fast aggregation over ratings and metadata.
 
-### 3.1 Table Definitions
+### 4.1 Table Definitions
 
 ```sql
 -- Movies Table
-CREATE TABLE movies (
-    movie_id INT PRIMARY KEY,
-    title VARCHAR(255),
+CREATE TABLE IF NOT EXISTS movies (
+    movie_id INT,
+    title VARCHAR(512) NOT NULL,
     release_year SMALLINT,
-    imdb_id VARCHAR(32),
-    tmdb_id VARCHAR(32)
+    PRIMARY KEY (movie_id)
 );
 
 -- Genres Table
-CREATE TABLE genres (
-    genre_id INT PRIMARY KEY,
-    name VARCHAR(64) UNIQUE
+CREATE TABLE IF NOT EXISTS genres (
+    genre_id INT,
+    name VARCHAR(64) NOT NULL UNIQUE,
+    PRIMARY KEY (genre_id)
 );
 
 -- Movie Genres Junction Table
-CREATE TABLE movie_genres (
+CREATE TABLE IF NOT EXISTS movie_genres (
     movie_id INT,
     genre_id INT,
     PRIMARY KEY (movie_id, genre_id),
@@ -84,30 +91,45 @@ CREATE TABLE movie_genres (
     FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
 );
 
--- Ratings Table (Massive Fact Table)
-CREATE TABLE ratings (
-    rating_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
+-- Movie External Identifiers Table
+CREATE TABLE IF NOT EXISTS movie_links (
     movie_id INT,
-    rating DECIMAL(2,1),
-    rated_at TIMESTAMP,
+    imdb_id VARCHAR(32),
+    tmdb_id VARCHAR(32),
+    PRIMARY KEY (movie_id),
     FOREIGN KEY (movie_id) REFERENCES movies(movie_id)
 );
 
--- Tags Table
-CREATE TABLE tags (
-    tag_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+-- Users Dimension Table
+CREATE TABLE IF NOT EXISTS users (
+    user_id INT,
+    PRIMARY KEY (user_id)
+);
+
+-- Ratings Fact Table (Massive Columnar Table)
+CREATE TABLE IF NOT EXISTS ratings (
     user_id INT,
     movie_id INT,
-    tag VARCHAR(255),
-    tagged_at TIMESTAMP,
+    rating DECIMAL(2,1) NOT NULL,
+    rated_at TIMESTAMP,
+    PRIMARY KEY (user_id, movie_id),
     FOREIGN KEY (movie_id) REFERENCES movies(movie_id)
+);
+
+-- Tags Fact Table
+CREATE TABLE IF NOT EXISTS tags (
+    user_id INT,
+    movie_id INT,
+    tag VARCHAR(512) NOT NULL,
+    tagged_at TIMESTAMP
 );
 ```
 
-### 3.2 Typical Analytical Query Patterns
+---
 
-**Genre Popularity & Average Rating by Decade:**
+## 5. Typical Analytical & Benchmark Queries
+
+### 5.1 MonetDB Aggregation: Genre Rating Trends Over Decades
 ```sql
 SELECT 
     g.name AS genre,
@@ -118,18 +140,20 @@ FROM ratings r
 JOIN movies m ON r.movie_id = m.movie_id
 JOIN movie_genres mg ON m.movie_id = mg.movie_id
 JOIN genres g ON mg.genre_id = g.genre_id
+WHERE m.release_year IS NOT NULL
 GROUP BY genre, decade
 ORDER BY decade DESC, avg_rating DESC;
 ```
 
----
-
-## 4. Ingestion Workflow (Planned)
-
-1. **Source Data**: MovieLens CSV datasets (`movies.csv`, `ratings.csv`, `tags.csv`, `links.csv`).
-2. **Transform Step**:
-   - Clean titles, extract 4-digit release years from title strings.
-   - Split pipe-separated genre strings (`Action|Sci-Fi|Thriller`).
-3. **Load Step**:
-   - Stream into Neo4j via APOC or parameterized Cypher queries.
-   - Bulk load into MonetDB via `COPY INTO` for high throughput.
+### 5.2 Neo4j Collaborative Traversal: Users with Similar Taste
+```cypher
+MATCH (u1:User {userId: $target_user})-[r1:RATED]->(m:Movie)<-[r2:RATED]-(u2:User)
+WHERE abs(r1.rating - r2.rating) <= 0.5 AND u1 <> u2
+WITH u2, count(m) AS common_movies
+WHERE common_movies >= 5
+MATCH (u2)-[r3:RATED]->(rec:Movie)
+WHERE NOT (u1)-[:RATED]->(rec) AND r3.rating >= 4.0
+RETURN rec.title AS recommended_movie, count(u2) AS recommendation_strength
+ORDER BY recommendation_strength DESC
+LIMIT 10;
+```
