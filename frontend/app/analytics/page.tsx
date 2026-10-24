@@ -21,11 +21,13 @@ import {
   GenrePopularity,
   RatingDistributionItem,
   MovieRatingAnalytics,
+  MovieSummary,
 } from "@/lib/types";
 import { StatCard } from "@/components/ui/StatCard";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { MovieAutocomplete } from "@/components/movies/MovieAutocomplete";
 
 export default function AnalyticsDashboard() {
   // Global analytics state
@@ -45,11 +47,15 @@ export default function AnalyticsDashboard() {
   const [genreView, setGenreView] = useState<"chart" | "table">("chart");
 
   // Movie deep-dive lookup
-  const [lookupMovieId, setLookupMovieId] = useState("1");
+  const [lookupMovie, setLookupMovie] = useState<MovieSummary | null>({
+    movie_id: 217465,
+    title: "Tenet",
+    year: 2020,
+    genres: ["Action", "Sci-Fi"],
+  });
   const [movieAnalytics, setMovieAnalytics] = useState<MovieRatingAnalytics | null>(null);
   const [isLookupLoading, setIsLookupLoading] = useState(false);
   const [lookupError, setLookupError] = useState<string | null>(null);
-
   // Initial load
   useEffect(() => {
     const fetchAllAnalytics = async () => {
@@ -92,19 +98,11 @@ export default function AnalyticsDashboard() {
     }
   };
 
-  // Movie lookup submission
-  const handleLookup = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    const id = parseInt(lookupMovieId, 10);
-    if (isNaN(id) || id <= 0) {
-      setLookupError("Please enter a valid positive Movie ID.");
-      return;
-    }
-
+  const fetchMovieAnalytics = async (movie: MovieSummary) => {
     setIsLookupLoading(true);
     setLookupError(null);
     try {
-      const data = await apiClient.getMovieRatingAnalytics(id);
+      const data = await apiClient.getMovieRatingAnalytics(movie.movie_id);
       setMovieAnalytics(data);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Movie rating analytics not found";
@@ -117,7 +115,12 @@ export default function AnalyticsDashboard() {
 
   // Run initial movie lookup on mount
   useEffect(() => {
-    handleLookup();
+    fetchMovieAnalytics({
+      movie_id: 217465,
+      title: "Tenet",
+      year: 2020,
+      genres: ["Action", "Sci-Fi"],
+    });
   }, []);
 
   // Compute total ratings in distribution for percentage calculations
@@ -475,77 +478,51 @@ export default function AnalyticsDashboard() {
 
           {/* SECTION E: Individual Movie Rating Analytics Deep Dive */}
           <section className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-6 space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+              <div className="space-y-1">
                 <h2 className="text-base font-bold text-white flex items-center gap-2">
                   <Search className="h-4 w-4 text-emerald-400" />
                   <span>5. Individual Movie Rating Analytics</span>
                 </h2>
-                <p className="text-xs text-neutral-400 mt-0.5">
-                  Fetch exact rating statistics for any movie ID
+                <p className="text-xs text-neutral-400">
+                  Search and inspect detailed rating statistics for any movie by title
                 </p>
               </div>
 
-              {/* Movie ID Lookup Form */}
-              <form onSubmit={handleLookup} className="flex items-center gap-2">
-                <input
-                  type="number"
-                  min="1"
-                  value={lookupMovieId}
-                  onChange={(e) => setLookupMovieId(e.target.value)}
-                  placeholder="Movie ID"
-                  className="w-32 rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-1.5 text-xs text-white placeholder:text-neutral-600 focus:border-indigo-500 focus:outline-none"
-                />
-                <button
-                  type="submit"
-                  disabled={isLookupLoading}
-                  className="rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 px-3 py-1.5 text-xs font-semibold text-white transition-colors flex items-center gap-1"
-                >
-                  <Search className="h-3 w-3" />
-                  <span>Inspect</span>
-                </button>
-              </form>
-            </div>
-
-            {/* Quick Chips */}
-            <div className="flex flex-wrap items-center gap-2 text-xs">
-              <span className="text-neutral-500">Sample Movie IDs:</span>
-              {[
-                { id: "217465", title: "Tenet (ID 217465)" },
-                { id: "225173", title: "Soul (ID 225173)" },
-                { id: "210861", title: "The Gentlemen (ID 210861)" },
-                { id: "218537", title: "Palm Springs (ID 218537)" },
-              ].map((chip) => (
-                <button
-                  key={chip.id}
-                  type="button"
-                  onClick={() => {
-                    setLookupMovieId(chip.id);
-                    apiClient.getMovieRatingAnalytics(parseInt(chip.id, 10)).then(setMovieAnalytics);
+              <div className="w-full md:max-w-md">
+                <MovieAutocomplete
+                  selectedMovie={lookupMovie}
+                  onSelectMovie={(movie) => {
+                    setLookupMovie(movie);
+                    fetchMovieAnalytics(movie);
                   }}
-                  className="rounded-md border border-neutral-800 bg-neutral-900 px-2 py-0.5 text-neutral-400 hover:text-white transition-colors"
-                >
-                  {chip.title}
-                </button>
-              ))}
+                  placeholder="Search movie by title (e.g. Tenet, Soul, Dune)..."
+                />
+              </div>
             </div>
 
             {isLookupLoading ? (
-              <LoadingState message={`Calculating rating statistics for Movie #${lookupMovieId} in MonetDB...`} />
+              <LoadingState message={`Calculating rating statistics for ${lookupMovie?.title || "selected movie"}...`} />
             ) : lookupError ? (
               <ErrorState title="Movie Not Found" message={lookupError} />
             ) : movieAnalytics ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
                 <div className="rounded-xl bg-neutral-950/80 border border-neutral-800 p-4">
-                  <span className="text-xs text-neutral-400">Target Movie</span>
-                  <div className="text-xl font-bold text-white font-mono mt-1">
-                    ID #{movieAnalytics.movie_id}
+                  <span className="text-xs text-neutral-400">Selected Movie</span>
+                  <div className="text-lg font-bold text-white mt-1 line-clamp-1" title={lookupMovie?.title}>
+                    {lookupMovie?.title || `Movie #${movieAnalytics.movie_id}`}
                   </div>
+                  {(lookupMovie?.year || lookupMovie?.release_year || (lookupMovie?.genres && lookupMovie.genres.length > 0)) && (
+                    <div className="text-[11px] text-neutral-400 line-clamp-1 mt-0.5 font-mono">
+                      {lookupMovie.year || lookupMovie.release_year ? `${lookupMovie.year || lookupMovie.release_year}` : ""}
+                      {lookupMovie.genres && lookupMovie.genres.length > 0 ? ` • ${lookupMovie.genres.slice(0, 2).join(", ")}` : ""}
+                    </div>
+                  )}
                   <Link
                     href={`/movies/${movieAnalytics.movie_id}`}
-                    className="text-indigo-400 hover:text-indigo-300 text-xs font-semibold inline-flex items-center gap-1 mt-2"
+                    className="text-indigo-400 hover:text-indigo-300 text-xs font-semibold inline-flex items-center gap-1 mt-2.5"
                   >
-                    <span>View Movie Node</span>
+                    <span>View Movie Details</span>
                     <ArrowRight className="h-3 w-3" />
                   </Link>
                 </div>
@@ -569,7 +546,7 @@ export default function AnalyticsDashboard() {
                   <div className="text-xl font-bold text-white font-mono mt-1">
                     {movieAnalytics.rating_count.toLocaleString()}
                   </div>
-                  <span className="text-[11px] text-neutral-500">ratings in fact table</span>
+                  <span className="text-[11px] text-neutral-500">total user ratings</span>
                 </div>
 
                 <div className="rounded-xl bg-neutral-950/80 border border-neutral-800 p-4">
