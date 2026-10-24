@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Film, Compass, Sparkles, BarChart3, Activity, Menu, X, Database } from "lucide-react";
+import { Film, Compass, Sparkles, BarChart3, Activity, Menu, X } from "lucide-react";
 
 interface NavItem {
   href: string;
@@ -14,10 +14,10 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Overview", icon: Compass, description: "System summary & quick entry" },
-  { href: "/movies", label: "Movies", icon: Film, description: "Discover & search 2,500 movies" },
-  { href: "/recommendations", label: "Recommendations", icon: Sparkles, description: "Neo4j graph & collaborative engine" },
-  { href: "/analytics", label: "Analytics", icon: BarChart3, description: "MonetDB columnar aggregations" },
-  { href: "/system", label: "System Status", icon: Activity, description: "Neo4j & MonetDB health" },
+  { href: "/movies", label: "Movies", icon: Film, description: "Discover & search movies" },
+  { href: "/recommendations", label: "Recommendations", icon: Sparkles, description: "Personalized & graph recommendations" },
+  { href: "/analytics", label: "Analytics", icon: BarChart3, description: "Ratings & genre analytics" },
+  { href: "/system", label: "System Status", icon: Activity, description: "Service status & health" },
 ];
 
 export function Navbar() {
@@ -39,7 +39,7 @@ export function Navbar() {
                 v1.0
               </span>
             </div>
-            <span className="text-[10px] text-neutral-400 font-medium">Neo4j + MonetDB NoSQL</span>
+            <span className="text-[10px] text-neutral-400 font-medium">Movie Discovery & Analytics</span>
           </div>
         </Link>
 
@@ -68,20 +68,14 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* System Pill & Mobile Trigger */}
+        {/* System Status & Mobile Trigger */}
         <div className="flex items-center gap-2">
           <Link
             href="/system"
-            className="hidden sm:inline-flex items-center gap-2 rounded-full border border-neutral-800 bg-neutral-900/90 px-3 py-1 text-xs text-neutral-300 hover:border-neutral-700 hover:text-white transition-colors"
+            className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-neutral-800 bg-neutral-900/90 px-3 py-1.5 text-xs text-neutral-300 hover:border-neutral-700 hover:text-white transition-colors"
           >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span className="font-mono text-[11px] text-neutral-400 flex items-center gap-1">
-              <Database className="h-3 w-3 text-neutral-400" />
-              Dual DB Active
-            </span>
+            <Activity className="h-3.5 w-3.5 text-emerald-400" />
+            <span>System Status</span>
           </Link>
 
           <button

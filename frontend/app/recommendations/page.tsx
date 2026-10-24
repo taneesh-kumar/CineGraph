@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
 import { RecommendationResult, RecommendationItem } from "@/lib/types";
-import { EngineBadge } from "@/components/ui/EngineBadge";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -109,15 +108,12 @@ function RecommendationsContent() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-800">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-              <Sparkles className="h-6 w-6 text-indigo-400" />
-              Recommendation Engine
-            </h1>
-            <EngineBadge engine="neo4j" />
-          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+            <Sparkles className="h-6 w-6 text-indigo-400" />
+            Recommendation Engine
+          </h1>
           <p className="text-sm text-neutral-400 mt-1">
-            Traverse Neo4j Cypher graph relationships using Jaccard content similarity and collaborative community walks.
+            Discover similar movies or explore personalized recommendations based on ratings.
           </p>
         </div>
 
@@ -206,7 +202,7 @@ function RecommendationsContent() {
                 className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-600/30 transition-colors flex items-center justify-center gap-2"
               >
                 <Sparkles className="h-4 w-4" />
-                <span>{isLoading ? "Traversing..." : "Run Recommendation"}</span>
+                <span>{isLoading ? "Finding..." : "Find Recommendations"}</span>
               </button>
             </div>
           </div>
@@ -247,11 +243,7 @@ function RecommendationsContent() {
 
       {/* Results Section */}
       {isLoading ? (
-        <LoadingState
-          message={`Executing ${
-            mode === "movie" ? "Jaccard similarity walk" : "collaborative filtering graph traversal"
-          } in Neo4j...`}
-        />
+        <LoadingState message="Finding movie recommendations..." />
       ) : error ? (
         <ErrorState message={error} onRetry={handleSubmit} />
       ) : results ? (

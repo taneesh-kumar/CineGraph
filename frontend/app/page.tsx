@@ -13,14 +13,11 @@ import {
   Database,
   Cpu,
   Layers,
-  CheckCircle2,
-  AlertCircle,
   RefreshCw,
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
-import { DatasetSummary, TopRatedMovie, GenrePopularity, ReadinessResponse } from "@/lib/types";
+import { DatasetSummary, TopRatedMovie, GenrePopularity } from "@/lib/types";
 import { StatCard } from "@/components/ui/StatCard";
-import { EngineBadge } from "@/components/ui/EngineBadge";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { ErrorState } from "@/components/ui/ErrorState";
 
@@ -28,7 +25,6 @@ export default function OverviewPage() {
   const [summary, setSummary] = useState<DatasetSummary | null>(null);
   const [topMovies, setTopMovies] = useState<TopRatedMovie[]>([]);
   const [genres, setGenres] = useState<GenrePopularity[]>([]);
-  const [readiness, setReadiness] = useState<ReadinessResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,21 +32,19 @@ export default function OverviewPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const [sumRes, topRes, genRes, readyRes] = await Promise.allSettled([
+      const [sumRes, topRes, genRes] = await Promise.allSettled([
         apiClient.getDatasetSummary(),
         apiClient.getTopRatedMovies(10, 4),
         apiClient.getGenrePopularity(5),
-        apiClient.getReadiness(),
       ]);
 
       if (sumRes.status === "fulfilled") setSummary(sumRes.value);
       if (topRes.status === "fulfilled") setTopMovies(topRes.value);
       if (genRes.status === "fulfilled") setGenres(genRes.value);
-      if (readyRes.status === "fulfilled") setReadiness(readyRes.value);
 
-      if (sumRes.status === "rejected" && readyRes.status === "rejected") {
+      if (sumRes.status === "rejected") {
         throw new Error(
-          "Unable to connect to CineGraph backend. Please ensure FastAPI (:8000), Neo4j (:7687) and MonetDB (:50000) are running."
+          "Unable to connect to CineGraph backend. Please ensure the backend server is running."
         );
       }
     } catch (err: unknown) {
@@ -70,29 +64,15 @@ export default function OverviewPage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden rounded-2xl border border-neutral-800/80 bg-gradient-to-b from-neutral-900/80 via-neutral-900/40 to-neutral-950 p-8 sm:p-12">
         <div className="max-w-3xl space-y-4">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-indigo-400">
-              <Sparkles className="h-3 w-3" />
-              Academic NoSQL Demonstration
-            </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-300">
-              MovieLens 32M Sample (2020–2023)
-            </span>
-          </div>
-
           <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-5xl leading-tight">
-            Graph Recommendations &{" "}
+            Movie Recommendations &{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-rose-400 to-amber-400">
-              Columnar Analytics
+              Graph Analytics
             </span>
           </h1>
 
           <p className="text-base sm:text-lg text-neutral-300 leading-relaxed">
-            CineGraph evaluates complementary NoSQL database paradigms side-by-side.{" "}
-            <strong className="text-white">Neo4j</strong> models movie relationship topology,
-            genre graphs, and collaborative recommendation walks.{" "}
-            <strong className="text-white">MonetDB</strong> executes high-speed columnar
-            aggregations and OLAP rating distribution benchmarks across millions of entries.
+            Explore movie collections, discover personalized recommendations, and analyze ratings and trends across thousands of films.
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -108,53 +88,16 @@ export default function OverviewPage() {
               className="inline-flex items-center gap-2 rounded-xl border border-neutral-700 bg-neutral-900/80 px-5 py-2.5 text-sm font-semibold text-neutral-200 hover:border-neutral-600 hover:bg-neutral-800 transition-colors"
             >
               <Sparkles className="h-4 w-4 text-indigo-400" />
-              <span>Graph Recommendations</span>
+              <span>Recommendations</span>
             </Link>
             <Link
               href="/analytics"
               className="inline-flex items-center gap-2 rounded-xl border border-neutral-700 bg-neutral-900/80 px-5 py-2.5 text-sm font-semibold text-neutral-200 hover:border-neutral-600 hover:bg-neutral-800 transition-colors"
             >
               <BarChart3 className="h-4 w-4 text-emerald-400" />
-              <span>Columnar Analytics</span>
+              <span>Analytics</span>
             </Link>
           </div>
-        </div>
-
-        {/* Readiness Pill */}
-        <div className="mt-8 pt-6 border-t border-neutral-800/80 flex flex-wrap items-center justify-between gap-4 text-xs">
-          <div className="flex items-center gap-2 text-neutral-400">
-            {readiness?.status === "ready" ? (
-              <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                Backend Dual-Engines Ready
-              </span>
-            ) : readiness ? (
-              <span className="flex items-center gap-1.5 text-amber-400 font-medium">
-                <AlertCircle className="h-4 w-4 text-amber-400" />
-                Degraded Engine Status ({readiness.status})
-              </span>
-            ) : (
-              <span className="flex items-center gap-1.5 text-neutral-500">
-                <AlertCircle className="h-4 w-4 text-neutral-500" />
-                Probing Backend Readiness...
-              </span>
-            )}
-            <span className="text-neutral-600">•</span>
-            <span className="font-mono text-neutral-400">
-              Neo4j: {readiness?.neo4j?.status === "connected" ? "Online (Bolt)" : "Connecting"} |
-              MonetDB: {readiness?.monetdb?.status === "connected" ? "Online (MAPI)" : "Connecting"}
-            </span>
-          </div>
-
-          <button
-            onClick={loadData}
-            disabled={isLoading}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-1 text-neutral-300 hover:border-neutral-700 hover:text-white transition-colors disabled:opacity-50"
-            title="Refresh overview metrics"
-          >
-            <RefreshCw className={`h-3 w-3 ${isLoading ? "animate-spin" : ""}`} />
-            <span>Refresh</span>
-          </button>
         </div>
       </section>
 
@@ -167,45 +110,45 @@ export default function OverviewPage() {
               Dataset Statistics
             </h2>
             <p className="text-xs text-neutral-400">
-              Live counts from MonetDB analytical catalog for current development sample
+              Overview of catalog movies, ratings, users, and genres
             </p>
           </div>
-          <EngineBadge engine="monetdb" />
+          <button
+            onClick={loadData}
+            disabled={isLoading}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-xs text-neutral-300 hover:border-neutral-700 hover:text-white transition-colors disabled:opacity-50"
+            title="Refresh statistics"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? "animate-spin text-indigo-400" : ""}`} />
+            <span>Refresh</span>
+          </button>
         </div>
 
         {isLoading && !summary ? (
-          <LoadingState message="Aggregating dataset catalog from MonetDB..." />
+          <LoadingState message="Loading catalog statistics..." />
         ) : error && !summary ? (
           <ErrorState message={error} onRetry={loadData} />
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <StatCard
-              title="Ingested Movies"
+              title="Total Movies"
               value={summary?.total_movies?.toLocaleString() ?? "2,500"}
-              subtitle="2020–2023 Sample"
               icon={Film}
-              engine="monetdb"
             />
             <StatCard
               title="Total Ratings"
               value={summary?.total_ratings?.toLocaleString() ?? "119,689"}
-              subtitle="Analytical Fact Table"
               icon={Star}
-              engine="monetdb"
             />
             <StatCard
               title="Active Users"
               value={summary?.total_users?.toLocaleString() ?? "18,327"}
-              subtitle="User Rating Graph"
               icon={Users}
-              engine="neo4j"
             />
             <StatCard
               title="Movie Genres"
               value={summary?.total_genres?.toLocaleString() ?? "16"}
-              subtitle="Graph Dimension Nodes"
               icon={Tags}
-              engine="hybrid"
             />
           </div>
         )}
@@ -214,9 +157,9 @@ export default function OverviewPage() {
       {/* Architecture Showcase: Neo4j vs MonetDB */}
       <section className="space-y-4">
         <div>
-          <h2 className="text-lg font-bold text-white">Dual NoSQL Architecture Breakdown</h2>
+          <h2 className="text-lg font-bold text-white">Dual Database Architecture</h2>
           <p className="text-xs text-neutral-400">
-            Engine specialization and verified query execution patterns
+            Specialized engines optimized for graph walks and columnar analytics
           </p>
         </div>
 
@@ -230,11 +173,10 @@ export default function OverviewPage() {
                     <Database className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-white text-base">Neo4j Community Graph</h3>
-                    <span className="text-xs text-neutral-400 font-mono">Port 7687 (Bolt Driver)</span>
+                    <h3 className="font-bold text-white text-base">Neo4j Graph Database</h3>
+                    <span className="text-xs text-neutral-400 font-mono">Graph Traversal & Relationships</span>
                   </div>
                 </div>
-                <EngineBadge engine="neo4j" />
               </div>
 
               <p className="text-sm text-neutral-300 leading-relaxed">
@@ -252,12 +194,12 @@ export default function OverviewPage() {
             </div>
 
             <div className="pt-4 border-t border-neutral-800/80 flex items-center justify-between text-xs">
-              <span className="text-neutral-400">Serves: Recommendations API</span>
+              <span className="text-neutral-400">Powers: Recommendations</span>
               <Link
                 href="/recommendations"
                 className="inline-flex items-center gap-1 font-semibold text-indigo-400 hover:text-indigo-300"
               >
-                <span>Test Graph Walk</span>
+                <span>View Recommendations</span>
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
@@ -272,11 +214,10 @@ export default function OverviewPage() {
                     <Cpu className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-white text-base">MonetDB Analytical Column-Store</h3>
-                    <span className="text-xs text-neutral-400 font-mono">Port 50000 (MAPI Protocol)</span>
+                    <h3 className="font-bold text-white text-base">MonetDB Column-Store</h3>
+                    <span className="text-xs text-neutral-400 font-mono">Fast Aggregations & OLAP</span>
                   </div>
                 </div>
-                <EngineBadge engine="monetdb" />
               </div>
 
               <p className="text-sm text-neutral-300 leading-relaxed">
@@ -295,7 +236,7 @@ export default function OverviewPage() {
             </div>
 
             <div className="pt-4 border-t border-neutral-800/80 flex items-center justify-between text-xs">
-              <span className="text-neutral-400">Serves: Analytics API</span>
+              <span className="text-neutral-400">Powers: Analytics</span>
               <Link
                 href="/analytics"
                 className="inline-flex items-center gap-1 font-semibold text-emerald-400 hover:text-emerald-300"
@@ -318,7 +259,7 @@ export default function OverviewPage() {
                 <Star className="h-4 w-4 text-amber-400" />
                 Top-Rated Movies Preview
               </h2>
-              <p className="text-xs text-neutral-400">Min. 10 ratings required (MonetDB scan)</p>
+              <p className="text-xs text-neutral-400">Min. 10 ratings required</p>
             </div>
             <Link
               href="/analytics"
@@ -374,7 +315,7 @@ export default function OverviewPage() {
                 <Tags className="h-4 w-4 text-emerald-400" />
                 Popular Genres Preview
               </h2>
-              <p className="text-xs text-neutral-400">Total ratings by genre from MonetDB</p>
+              <p className="text-xs text-neutral-400">Total ratings by genre</p>
             </div>
             <Link
               href="/analytics"

@@ -13,7 +13,6 @@ import {
   TrendingUp,
   Table as TableIcon,
   BarChart2,
-  Cpu,
 } from "lucide-react";
 import { apiClient } from "@/lib/api/client";
 import {
@@ -24,7 +23,6 @@ import {
   MovieRatingAnalytics,
 } from "@/lib/types";
 import { StatCard } from "@/components/ui/StatCard";
-import { EngineBadge } from "@/components/ui/EngineBadge";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -140,72 +138,53 @@ export default function AnalyticsDashboard() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-800">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-              <BarChart3 className="h-6 w-6 text-emerald-400" />
-              Columnar Analytics Dashboard
-            </h1>
-            <EngineBadge engine="monetdb" />
-          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+            <BarChart3 className="h-6 w-6 text-emerald-400" />
+            Analytics Dashboard
+          </h1>
           <p className="text-sm text-neutral-400 mt-1">
-            Real-time vectorized OLAP aggregations powered by MonetDB column-store engine.
+            Aggregations, rating distributions, and trend insights across movies.
           </p>
-        </div>
-
-        <div className="text-xs text-neutral-400 bg-neutral-900 border border-neutral-800 px-3 py-1.5 rounded-lg flex items-center gap-2">
-          <Cpu className="h-4 w-4 text-emerald-400" />
-          <span>Vectorized Fact Table Scans</span>
         </div>
       </div>
 
       {isLoading ? (
-        <LoadingState message="Executing analytical queries across MonetDB tables..." />
+        <LoadingState message="Loading analytical data..." />
       ) : error ? (
         <ErrorState message={error} onRetry={() => window.location.reload()} />
       ) : (
         <>
           {/* SECTION A: Dataset Overview */}
           <section className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <span>1. Dataset Catalog Overview</span>
-                </h2>
-                <p className="text-xs text-neutral-400">
-                  Total record counts currently ingested into MonetDB and Neo4j
-                </p>
-              </div>
-              <EngineBadge engine="monetdb" size="sm" />
+            <div>
+              <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                <span>1. Catalog Overview</span>
+              </h2>
+              <p className="text-xs text-neutral-400">
+                Total record counts across movies, ratings, users, and genres
+              </p>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <StatCard
                 title="Total Movies"
                 value={summary?.total_movies?.toLocaleString() ?? "2,500"}
-                subtitle="2020–2023 Sample"
                 icon={Film}
-                engine="monetdb"
               />
               <StatCard
                 title="Total Ratings"
                 value={summary?.total_ratings?.toLocaleString() ?? "119,689"}
-                subtitle="Aggregated Fact Tuples"
                 icon={Star}
-                engine="monetdb"
               />
               <StatCard
                 title="Total Users"
                 value={summary?.total_users?.toLocaleString() ?? "18,327"}
-                subtitle="Distinct Users"
                 icon={Users}
-                engine="monetdb"
               />
               <StatCard
                 title="Distinct Genres"
                 value={summary?.total_genres?.toLocaleString() ?? "16"}
-                subtitle="Categorical Dimensions"
                 icon={Tags}
-                engine="monetdb"
               />
             </div>
           </section>
@@ -214,15 +193,12 @@ export default function AnalyticsDashboard() {
           <section className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-6 space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                    <Star className="h-5 w-5 text-amber-400" />
-                    <span>2. Top-Rated Movies Ranking</span>
-                  </h2>
-                  <EngineBadge engine="monetdb" size="sm" />
-                </div>
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Star className="h-5 w-5 text-amber-400" />
+                  <span>2. Top-Rated Movies Ranking</span>
+                </h2>
                 <p className="text-xs text-neutral-400 mt-0.5">
-                  Vectorized SQL aggregation filtering out low-sample noise using minimum rating count
+                  Filter movies by minimum rating count to discover top-rated titles
                 </p>
               </div>
 
@@ -341,15 +317,12 @@ export default function AnalyticsDashboard() {
             <section className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-6 space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-base font-bold text-white flex items-center gap-2">
-                      <Tags className="h-4 w-4 text-emerald-400" />
-                      <span>3. Genre Popularity</span>
-                    </h2>
-                    <EngineBadge engine="monetdb" size="sm" />
-                  </div>
+                  <h2 className="text-base font-bold text-white flex items-center gap-2">
+                    <Tags className="h-4 w-4 text-emerald-400" />
+                    <span>3. Genre Popularity</span>
+                  </h2>
                   <p className="text-xs text-neutral-400 mt-0.5">
-                    Aggregated total ratings per genre dimension
+                    Total ratings and distribution across genres
                   </p>
                 </div>
 
@@ -433,15 +406,12 @@ export default function AnalyticsDashboard() {
             <section className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-6 space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-base font-bold text-white flex items-center gap-2">
-                      <TrendingUp className="h-4 w-4 text-indigo-400" />
-                      <span>4. Rating Distribution</span>
-                    </h2>
-                    <EngineBadge engine="monetdb" size="sm" />
-                  </div>
+                  <h2 className="text-base font-bold text-white flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-indigo-400" />
+                    <span>4. Rating Distribution</span>
+                  </h2>
                   <p className="text-xs text-neutral-400 mt-0.5">
-                    Histogram of raw rating values (0.5 to 5.0 stars) across sample
+                    Distribution of rating values (0.5 to 5.0 stars)
                   </p>
                 </div>
 
@@ -507,15 +477,12 @@ export default function AnalyticsDashboard() {
           <section className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-6 space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-base font-bold text-white flex items-center gap-2">
-                    <Search className="h-4 w-4 text-emerald-400" />
-                    <span>5. Individual Movie Rating Analytics</span>
-                  </h2>
-                  <EngineBadge engine="monetdb" size="sm" />
-                </div>
+                <h2 className="text-base font-bold text-white flex items-center gap-2">
+                  <Search className="h-4 w-4 text-emerald-400" />
+                  <span>5. Individual Movie Rating Analytics</span>
+                </h2>
                 <p className="text-xs text-neutral-400 mt-0.5">
-                  Fetch exact rating aggregations for any movie ID directly from MonetDB
+                  Fetch exact rating statistics for any movie ID
                 </p>
               </div>
 

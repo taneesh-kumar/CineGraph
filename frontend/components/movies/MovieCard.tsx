@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Star, Sparkles, ArrowRight } from "lucide-react";
 import { MovieSummary } from "@/lib/types";
-import { EngineBadge } from "@/components/ui/EngineBadge";
 
 interface MovieCardProps {
   movie: MovieSummary;
@@ -12,10 +11,9 @@ export function MovieCard({ movie, showSimilarAction = true }: MovieCardProps) {
   return (
     <div className="group flex flex-col justify-between rounded-xl border border-neutral-800/80 bg-neutral-900/60 p-5 shadow-sm transition-all duration-200 hover:border-neutral-700 hover:bg-neutral-900 hover:shadow-md hover:shadow-indigo-950/20">
       <div>
-        {/* Top Header: ID & Engine */}
+        {/* Top Header: ID */}
         <div className="flex items-center justify-between gap-2 text-xs text-neutral-500 mb-2">
           <span className="font-mono text-[11px] text-neutral-400">ID #{movie.movie_id}</span>
-          <EngineBadge engine="neo4j" size="sm" showIcon={false} />
         </div>
 
         {/* Title & Year */}
@@ -80,7 +78,7 @@ export function MovieCard({ movie, showSimilarAction = true }: MovieCardProps) {
             <Link
               href={`/recommendations?movie_id=${movie.movie_id}`}
               className="inline-flex items-center gap-1 rounded bg-neutral-800 hover:bg-neutral-700 px-2 py-1 text-[11px] text-neutral-300 transition-colors"
-              title="Find similar movies via Neo4j graph traversal"
+              title="Find similar movies"
             >
               <Sparkles className="h-3 w-3 text-indigo-400" />
               <span>Similar</span>

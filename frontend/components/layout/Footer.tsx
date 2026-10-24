@@ -10,35 +10,35 @@ export function Footer() {
           <div className="md:col-span-2 space-y-3">
             <div className="flex items-center gap-2">
               <span className="font-bold text-white text-base tracking-tight">CineGraph</span>
-              <span className="text-xs text-neutral-500 font-mono">NoSQL Dual-Engine Architecture</span>
+              <span className="text-xs text-neutral-500 font-mono">Movie Analytics & Recommendations</span>
             </div>
             <p className="text-sm text-neutral-400 max-w-md leading-relaxed">
-              Academic demonstration pairing <strong className="text-neutral-200">Neo4j</strong> (graph traversal, community detection, collaborative filtering) with <strong className="text-neutral-200">MonetDB</strong> (columnar aggregations, rating distributions, and analytical querying) over the MovieLens dataset.
+              CineGraph combines graph traversal algorithms for personalized recommendations with high-speed analytics across millions of movie ratings.
             </p>
             <div className="inline-flex items-center gap-2 rounded-md bg-neutral-900/90 px-3 py-1.5 text-xs text-neutral-400 border border-neutral-800">
               <ShieldCheck className="h-3.5 w-3.5 text-indigo-400" />
-              <span>Dataset sample: 2,500 movies (2020–2023), 18,327 users, 119,689 ratings ingested.</span>
+              <span>Catalog: 2,500 movies, 18,327 users, 119,689 ratings.</span>
             </div>
           </div>
 
-          {/* Dual Database Architecture */}
+          {/* Architecture */}
           <div className="space-y-2.5">
             <h3 className="text-xs font-semibold text-neutral-300 uppercase tracking-wider">
-              Engine Attribution
+              Architecture
             </h3>
             <ul className="space-y-2 text-xs">
               <li className="flex items-start gap-2">
                 <Database className="h-3.5 w-3.5 text-indigo-400 mt-0.5 shrink-0" />
                 <div>
-                  <span className="text-neutral-200 font-medium">Neo4j (Bolt 7687):</span>
-                  <p className="text-neutral-500">Movie graph, genres, user collaborative walks.</p>
+                  <span className="text-neutral-200 font-medium">Neo4j Graph:</span>
+                  <p className="text-neutral-500">Movie topology, genres, and collaborative walks.</p>
                 </div>
               </li>
               <li className="flex items-start gap-2">
                 <Cpu className="h-3.5 w-3.5 text-emerald-400 mt-0.5 shrink-0" />
                 <div>
-                  <span className="text-neutral-200 font-medium">MonetDB (MAPI 50000):</span>
-                  <p className="text-neutral-500">Columnar aggregations, top-rated ranking, rating distributions.</p>
+                  <span className="text-neutral-200 font-medium">MonetDB Columnar:</span>
+                  <p className="text-neutral-500">Aggregations, ranking, and rating distributions.</p>
                 </div>
               </li>
             </ul>
@@ -57,17 +57,17 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/recommendations" className="hover:text-white transition-colors">
-                  Graph Recommendations
+                  Recommendations
                 </Link>
               </li>
               <li>
                 <Link href="/analytics" className="hover:text-white transition-colors">
-                  Columnar Analytics
+                  Analytics
                 </Link>
               </li>
               <li>
                 <Link href="/system" className="hover:text-white transition-colors">
-                  System Health & Readiness
+                  System Status
                 </Link>
               </li>
             </ul>
@@ -76,7 +76,7 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-8 pt-8 border-t border-neutral-900 flex flex-col sm:flex-row items-center justify-between text-xs text-neutral-500 gap-4">
-          <p>© 2026 CineGraph Academic Project. Built with Next.js, FastAPI, Neo4j & MonetDB.</p>
+          <p>© 2026 CineGraph. All rights reserved.</p>
           <div className="flex items-center gap-4">
             <span className="inline-flex items-center gap-1">
               <GitFork className="h-3 w-3" />

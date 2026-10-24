@@ -9,7 +9,6 @@ import { MovieGrid } from "@/components/movies/MovieGrid";
 import { LoadingState } from "@/components/ui/LoadingState";
 import { ErrorState } from "@/components/ui/ErrorState";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { EngineBadge } from "@/components/ui/EngineBadge";
 
 export default function MoviesPage() {
   const [movies, setMovies] = useState<MovieSummary[]>([]);
@@ -55,15 +54,12 @@ export default function MoviesPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-neutral-800">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-              <Film className="h-6 w-6 text-indigo-400" />
-              Movie Explorer
-            </h1>
-            <EngineBadge engine="neo4j" />
-          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+            <Film className="h-6 w-6 text-indigo-400" />
+            Movie Explorer
+          </h1>
           <p className="text-sm text-neutral-400 mt-1">
-            Search titles, filter genres, and explore node entities in the 2,500-movie (2020–2023) dataset sample.
+            Search titles and filter movies by genre.
           </p>
         </div>
 
