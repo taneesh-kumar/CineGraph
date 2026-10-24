@@ -145,28 +145,28 @@ export default function OverviewPage() {
               {/* Connector line with node weight */}
               <div className="flex items-center justify-center gap-2 text-[11px] text-neutral-500 font-mono py-0.5">
                 <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
-                <span className="px-2 py-0.5 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800/60 font-semibold text-[10px]">
-                  Shared Genre Node Link
+                <span className="px-2.5 py-0.5 rounded-full bg-indigo-950 text-indigo-350 border border-indigo-700/60 font-semibold text-[10px] flex items-center gap-1">
+                  <span>Shared: Action, Thriller</span>
                 </span>
                 <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
               </div>
 
-              {/* Target Recommendation Candidate */}
+              {/* Target Recommendation Candidate (Real Neo4j Recommendation for Tenet) */}
               <div className="rounded-xl border border-indigo-900/60 bg-gradient-to-r from-indigo-950/40 to-neutral-950/80 p-3.5 space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <div>
-                    <span className="font-bold text-white text-sm">Soul (2020)</span>
-                    <span className="text-[10px] text-neutral-400 ml-2">Score: 0.850</span>
+                    <span className="font-bold text-white text-sm">Nobody (2021)</span>
+                    <span className="text-[10px] text-indigo-300 ml-2 font-mono">Score: 5.84</span>
                   </div>
                   <div className="flex items-center gap-1 font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20 text-xs">
                     <Star className="h-3 w-3 fill-amber-400" />
-                    <span>4.15</span>
+                    <span>3.69</span>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-1 text-[10px]">
-                  <span className="rounded bg-neutral-800/90 px-2 py-0.5 text-neutral-300">Animation</span>
-                  <span className="rounded bg-neutral-800/90 px-2 py-0.5 text-neutral-300">Fantasy</span>
-                  <span className="rounded bg-neutral-800/90 px-2 py-0.5 text-neutral-300">Comedy</span>
+                  <span className="rounded bg-indigo-600/30 border border-indigo-500/40 px-2 py-0.5 text-indigo-200 font-medium">Action</span>
+                  <span className="rounded bg-indigo-600/30 border border-indigo-500/40 px-2 py-0.5 text-indigo-200 font-medium">Thriller</span>
+                  <span className="rounded bg-neutral-800/90 px-2 py-0.5 text-neutral-300">Crime</span>
                 </div>
               </div>
 

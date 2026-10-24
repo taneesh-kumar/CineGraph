@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search, X, Loader2 } from "lucide-react";
 
 interface MovieSearchProps {
@@ -19,10 +19,15 @@ export function MovieSearch({
   placeholder = "Search movies by title (e.g. Tenet, Soul, Dune)...",
 }: MovieSearchProps) {
   const [value, setValue] = useState(initialQuery);
+  const prevReportedQuery = useRef(initialQuery);
 
   useEffect(() => {
+    const trimmed = value.trim();
+    if (trimmed === prevReportedQuery.current) return;
+
     const handler = setTimeout(() => {
-      onSearch(value.trim());
+      prevReportedQuery.current = trimmed;
+      onSearch(trimmed);
     }, 320);
 
     return () => clearTimeout(handler);

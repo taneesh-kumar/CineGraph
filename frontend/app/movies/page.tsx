@@ -49,6 +49,16 @@ export default function MoviesPage() {
     ? movies.filter((m) => m.genres?.includes(selectedGenre))
     : movies;
 
+  const handleSearchChange = useCallback((newQuery: string) => {
+    setQuery((prev) => {
+      if (prev !== newQuery) {
+        setSelectedGenre(null); // only reset genre if user actually changed search text
+        return newQuery;
+      }
+      return prev;
+    });
+  }, []);
+
   return (
     <div className="space-y-8">
       {/* Page Header */}
@@ -71,10 +81,7 @@ export default function MoviesPage() {
       {/* Search Bar */}
       <div className="rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-900/80 to-neutral-950/90 p-6 md:p-8 space-y-5 backdrop-blur-md shadow-xl shadow-black/40">
         <MovieSearch
-          onSearch={(q) => {
-            setQuery(q);
-            setSelectedGenre(null);
-          }}
+          onSearch={handleSearchChange}
           isLoading={isLoading}
         />
 
