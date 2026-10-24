@@ -173,31 +173,39 @@ export default function AnalyticsDashboard() {
                 title="Total Movies"
                 value={summary?.total_movies?.toLocaleString() ?? "2,500"}
                 icon={Film}
+                accentColor="indigo"
+                subtitle="Catalog titles"
               />
               <StatCard
                 title="Total Ratings"
                 value={summary?.total_ratings?.toLocaleString() ?? "119,689"}
                 icon={Star}
+                accentColor="amber"
+                subtitle="User reviews"
               />
               <StatCard
                 title="Total Users"
                 value={summary?.total_users?.toLocaleString() ?? "18,327"}
                 icon={Users}
+                accentColor="emerald"
+                subtitle="Active reviewers"
               />
               <StatCard
                 title="Distinct Genres"
                 value={summary?.total_genres?.toLocaleString() ?? "16"}
                 icon={Tags}
+                accentColor="purple"
+                subtitle="Taxonomy categories"
               />
             </div>
           </section>
 
           {/* SECTION B: Top-Rated Movies */}
-          <section className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-6 space-y-6">
+          <section className="rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-900/80 to-neutral-950/90 p-6 md:p-8 space-y-6 backdrop-blur-md shadow-xl shadow-black/40">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Star className="h-5 w-5 text-amber-400" />
+                  <Star className="h-5 w-5 text-amber-400 fill-amber-400" />
                   <span>2. Top-Rated Movies Ranking</span>
                 </h2>
                 <p className="text-xs text-neutral-400 mt-0.5">
@@ -317,11 +325,11 @@ export default function AnalyticsDashboard() {
           {/* SECTION C & D: Genre Popularity & Rating Distribution */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Genre Popularity */}
-            <section className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-6 space-y-6">
+            <section className="rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-900/80 to-neutral-950/90 p-6 md:p-8 space-y-6 backdrop-blur-md shadow-xl shadow-black/40">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-base font-bold text-white flex items-center gap-2">
-                    <Tags className="h-4 w-4 text-emerald-400" />
+                    <Tags className="h-4 w-4 text-purple-400" />
                     <span>3. Genre Popularity</span>
                   </h2>
                   <p className="text-xs text-neutral-400 mt-0.5">
@@ -406,7 +414,7 @@ export default function AnalyticsDashboard() {
             </section>
 
             {/* Rating Distribution Histogram */}
-            <section className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-6 space-y-6">
+            <section className="rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-900/80 to-neutral-950/90 p-6 md:p-8 space-y-6 backdrop-blur-md shadow-xl shadow-black/40">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-base font-bold text-white flex items-center gap-2">
@@ -418,7 +426,7 @@ export default function AnalyticsDashboard() {
                   </p>
                 </div>
 
-                <div className="text-[11px] font-mono text-neutral-400">
+                <div className="text-[11px] font-mono text-neutral-400 bg-neutral-950/80 px-2.5 py-1 rounded-full border border-neutral-800">
                   {totalDistributionRatings.toLocaleString()} total votes
                 </div>
               </div>
@@ -477,7 +485,7 @@ export default function AnalyticsDashboard() {
           </div>
 
           {/* SECTION E: Individual Movie Rating Analytics Deep Dive */}
-          <section className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-6 space-y-6">
+          <section className="rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-900/80 to-neutral-950/90 p-6 md:p-8 space-y-6 backdrop-blur-md shadow-xl shadow-black/40">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
               <div className="space-y-1">
                 <h2 className="text-base font-bold text-white flex items-center gap-2">
@@ -507,30 +515,32 @@ export default function AnalyticsDashboard() {
               <ErrorState title="Movie Not Found" message={lookupError} />
             ) : movieAnalytics ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
-                <div className="rounded-xl bg-neutral-950/80 border border-neutral-800 p-4">
-                  <span className="text-xs text-neutral-400">Selected Movie</span>
-                  <div className="text-lg font-bold text-white mt-1 line-clamp-1" title={lookupMovie?.title}>
-                    {lookupMovie?.title || `Movie #${movieAnalytics.movie_id}`}
-                  </div>
-                  {(lookupMovie?.year || lookupMovie?.release_year || (lookupMovie?.genres && lookupMovie.genres.length > 0)) && (
-                    <div className="text-[11px] text-neutral-400 line-clamp-1 mt-0.5 font-mono">
-                      {lookupMovie.year || lookupMovie.release_year ? `${lookupMovie.year || lookupMovie.release_year}` : ""}
-                      {lookupMovie.genres && lookupMovie.genres.length > 0 ? ` • ${lookupMovie.genres.slice(0, 2).join(", ")}` : ""}
+                <div className="rounded-2xl bg-neutral-950/80 border border-neutral-800/90 p-5 flex flex-col justify-between shadow-md">
+                  <div>
+                    <span className="text-xs text-neutral-400 font-medium">Selected Movie</span>
+                    <div className="text-lg font-bold text-white mt-1 line-clamp-1" title={lookupMovie?.title}>
+                      {lookupMovie?.title || `Movie #${movieAnalytics.movie_id}`}
                     </div>
-                  )}
+                    {(lookupMovie?.year || lookupMovie?.release_year || (lookupMovie?.genres && lookupMovie.genres.length > 0)) && (
+                      <div className="text-[11px] text-neutral-400 line-clamp-1 mt-0.5 font-mono">
+                        {lookupMovie.year || lookupMovie.release_year ? `${lookupMovie.year || lookupMovie.release_year}` : ""}
+                        {lookupMovie.genres && lookupMovie.genres.length > 0 ? ` • ${lookupMovie.genres.slice(0, 2).join(", ")}` : ""}
+                      </div>
+                    )}
+                  </div>
                   <Link
                     href={`/movies/${movieAnalytics.movie_id}`}
-                    className="text-indigo-400 hover:text-indigo-300 text-xs font-semibold inline-flex items-center gap-1 mt-2.5"
+                    className="text-indigo-400 hover:text-indigo-300 text-xs font-semibold inline-flex items-center gap-1.5 mt-3 transition-colors"
                   >
                     <span>View Movie Details</span>
                     <ArrowRight className="h-3 w-3" />
                   </Link>
                 </div>
 
-                <div className="rounded-xl bg-neutral-950/80 border border-neutral-800 p-4">
-                  <span className="text-xs text-neutral-400">Average Rating</span>
-                  <div className="text-xl font-bold text-amber-400 font-mono mt-1 flex items-center gap-1.5">
-                    <Star className="h-4 w-4 fill-amber-400" />
+                <div className="rounded-2xl bg-neutral-950/80 border border-neutral-800/90 p-5 shadow-md">
+                  <span className="text-xs text-neutral-400 font-medium">Average Rating</span>
+                  <div className="text-2xl font-bold text-amber-400 font-mono mt-1.5 flex items-center gap-2">
+                    <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
                     <span>
                       {(movieAnalytics.avg_rating ?? movieAnalytics.average_rating) !== null &&
                       (movieAnalytics.avg_rating ?? movieAnalytics.average_rating) !== undefined
@@ -538,23 +548,23 @@ export default function AnalyticsDashboard() {
                         : "N/A"}
                     </span>
                   </div>
-                  <span className="text-[11px] text-neutral-500">out of 5.0</span>
+                  <span className="text-[11px] text-neutral-500 mt-0.5 block">out of 5.0 stars</span>
                 </div>
 
-                <div className="rounded-xl bg-neutral-950/80 border border-neutral-800 p-4">
-                  <span className="text-xs text-neutral-400">Total Ratings</span>
-                  <div className="text-xl font-bold text-white font-mono mt-1">
+                <div className="rounded-2xl bg-neutral-950/80 border border-neutral-800/90 p-5 shadow-md">
+                  <span className="text-xs text-neutral-400 font-medium">Total Ratings</span>
+                  <div className="text-2xl font-bold text-white font-mono mt-1.5">
                     {movieAnalytics.rating_count.toLocaleString()}
                   </div>
-                  <span className="text-[11px] text-neutral-500">total user ratings</span>
+                  <span className="text-[11px] text-neutral-500 mt-0.5 block">total user ratings</span>
                 </div>
 
-                <div className="rounded-xl bg-neutral-950/80 border border-neutral-800 p-4">
-                  <span className="text-xs text-neutral-400">Rating Range</span>
-                  <div className="text-xl font-bold text-neutral-200 font-mono mt-1">
+                <div className="rounded-2xl bg-neutral-950/80 border border-neutral-800/90 p-5 shadow-md">
+                  <span className="text-xs text-neutral-400 font-medium">Rating Range</span>
+                  <div className="text-2xl font-bold text-neutral-200 font-mono mt-1.5">
                     {movieAnalytics.min_rating ?? "—"} - {movieAnalytics.max_rating ?? "—"}
                   </div>
-                  <span className="text-[11px] text-neutral-500">min - max scale</span>
+                  <span className="text-[11px] text-neutral-500 mt-0.5 block">min - max scale</span>
                 </div>
               </div>
             ) : null}

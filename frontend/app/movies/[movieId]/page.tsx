@@ -116,22 +116,25 @@ function MovieDetailsContent({ params }: PageProps) {
       </div>
 
       {/* Main Movie Hero Banner */}
-      <div className="rounded-2xl border border-neutral-800/80 bg-gradient-to-br from-neutral-900/90 via-neutral-900/50 to-neutral-950 p-6 sm:p-8 space-y-6">
+      <div className="relative rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-900/90 via-neutral-900/60 to-neutral-950/95 p-6 sm:p-10 space-y-8 backdrop-blur-md shadow-2xl shadow-black/50 overflow-hidden">
+        {/* Decorative ambient top glow */}
+        <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-          <div className="space-y-3 max-w-3xl">
-            <div className="flex flex-wrap items-center gap-2 text-xs">
-              <span className="font-mono text-neutral-400 bg-neutral-800/80 px-2 py-0.5 rounded border border-neutral-700">
+          <div className="space-y-4 max-w-3xl">
+            <div className="flex flex-wrap items-center gap-2.5 text-xs">
+              <span className="font-mono text-neutral-300 bg-neutral-800/80 px-2.5 py-1 rounded-full border border-neutral-700/60">
                 Movie ID: {movie.movie_id}
               </span>
               {(movie.year || movie.release_year) && (
-                <span className="flex items-center gap-1 text-neutral-400 font-medium">
-                  <Calendar className="h-3 w-3" />
+                <span className="flex items-center gap-1.5 text-neutral-300 bg-neutral-800/60 px-2.5 py-1 rounded-full border border-neutral-700/50 font-medium">
+                  <Calendar className="h-3.5 w-3.5 text-indigo-400" />
                   {movie.year || movie.release_year}
                 </span>
               )}
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+            <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
               {movie.title}
             </h1>
 
@@ -141,7 +144,7 @@ function MovieDetailsContent({ params }: PageProps) {
                 movie.genres.map((g) => (
                   <span
                     key={g}
-                    className="inline-flex items-center rounded-lg bg-neutral-800/90 px-3 py-1 text-xs font-semibold text-neutral-200 border border-neutral-700/60"
+                    className="inline-flex items-center rounded-full bg-neutral-800/80 px-3.5 py-1 text-xs font-semibold text-neutral-200 border border-neutral-700/70 shadow-sm"
                   >
                     {g}
                   </span>
@@ -156,7 +159,7 @@ function MovieDetailsContent({ params }: PageProps) {
           <div className="flex flex-col gap-2 shrink-0">
             <Link
               href={`/recommendations?movie_id=${movie.movie_id}`}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-600/20 hover:bg-indigo-500 transition-colors"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 hover:bg-indigo-500 hover:shadow-indigo-600/50 transition-all cursor-pointer"
             >
               <Sparkles className="h-4 w-4" />
               <span>View Recommendations</span>
@@ -165,55 +168,55 @@ function MovieDetailsContent({ params }: PageProps) {
         </div>
 
         {/* Rating Metrics Bar */}
-        <div className="pt-6 border-t border-neutral-800/80 grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="rounded-xl bg-neutral-900/80 border border-neutral-800 p-4">
-            <div className="flex items-center justify-between text-xs text-neutral-400 mb-1">
+        <div className="pt-8 border-t border-neutral-800/80 grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="rounded-2xl bg-neutral-950/80 border border-neutral-800/90 p-5 shadow-md">
+            <div className="flex items-center justify-between text-xs text-neutral-400 mb-2 font-medium">
               <span>Average Rating</span>
             </div>
             <div className="flex items-center gap-2">
               <Star className="h-5 w-5 text-amber-400 fill-amber-400" />
-              <span className="text-2xl font-bold text-white">
+              <span className="text-3xl font-bold text-white font-mono">
                 {(ratingAnalytics?.avg_rating ?? ratingAnalytics?.average_rating) !== null &&
                 (ratingAnalytics?.avg_rating ?? ratingAnalytics?.average_rating) !== undefined
                   ? (ratingAnalytics?.avg_rating ?? ratingAnalytics?.average_rating)!.toFixed(2)
                   : "N/A"}
               </span>
-              <span className="text-xs text-neutral-500">/ 5.0</span>
+              <span className="text-xs text-neutral-500 font-mono">/ 5.0</span>
             </div>
           </div>
 
-          <div className="rounded-xl bg-neutral-900/80 border border-neutral-800 p-4">
-            <div className="flex items-center justify-between text-xs text-neutral-400 mb-1">
+          <div className="rounded-2xl bg-neutral-950/80 border border-neutral-800/90 p-5 shadow-md">
+            <div className="flex items-center justify-between text-xs text-neutral-400 mb-2 font-medium">
               <span>Rating Count</span>
             </div>
-            <div className="text-2xl font-bold text-white font-mono">
+            <div className="text-3xl font-bold text-white font-mono">
               {ratingAnalytics?.rating_count ? ratingAnalytics.rating_count.toLocaleString() : "0"}
             </div>
-            <div className="text-[11px] text-neutral-500">total ratings</div>
+            <div className="text-[11px] text-neutral-500 mt-0.5">total ratings</div>
           </div>
 
-          <div className="rounded-xl bg-neutral-900/80 border border-neutral-800 p-4">
-            <div className="flex items-center justify-between text-xs text-neutral-400 mb-1">
+          <div className="rounded-2xl bg-neutral-950/80 border border-neutral-800/90 p-5 shadow-md">
+            <div className="flex items-center justify-between text-xs text-neutral-400 mb-2 font-medium">
               <span>Min Rating</span>
             </div>
-            <div className="text-2xl font-bold text-neutral-200 font-mono">
+            <div className="text-3xl font-bold text-neutral-200 font-mono">
               {ratingAnalytics?.min_rating !== null && ratingAnalytics?.min_rating !== undefined
                 ? ratingAnalytics.min_rating.toFixed(1)
                 : "—"}
             </div>
-            <div className="text-[11px] text-neutral-500">lowest awarded</div>
+            <div className="text-[11px] text-neutral-500 mt-0.5">lowest awarded</div>
           </div>
 
-          <div className="rounded-xl bg-neutral-900/80 border border-neutral-800 p-4">
-            <div className="flex items-center justify-between text-xs text-neutral-400 mb-1">
+          <div className="rounded-2xl bg-neutral-950/80 border border-neutral-800/90 p-5 shadow-md">
+            <div className="flex items-center justify-between text-xs text-neutral-400 mb-2 font-medium">
               <span>Max Rating</span>
             </div>
-            <div className="text-2xl font-bold text-neutral-200 font-mono">
+            <div className="text-3xl font-bold text-neutral-200 font-mono">
               {ratingAnalytics?.max_rating !== null && ratingAnalytics?.max_rating !== undefined
                 ? ratingAnalytics.max_rating.toFixed(1)
                 : "—"}
             </div>
-            <div className="text-[11px] text-neutral-500">highest awarded</div>
+            <div className="text-[11px] text-neutral-500 mt-0.5">highest awarded</div>
           </div>
         </div>
       </div>
@@ -233,16 +236,16 @@ function MovieDetailsContent({ params }: PageProps) {
         </div>
 
         {recommendations?.recommendations && recommendations.recommendations.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {recommendations.recommendations.map((rec) => (
               <div
                 key={rec.movie_id}
-                className="flex flex-col justify-between rounded-xl border border-neutral-800 bg-neutral-900/60 p-5 hover:border-neutral-700 hover:bg-neutral-900 transition-colors"
+                className="group relative flex flex-col justify-between rounded-2xl border border-neutral-800/80 bg-gradient-to-b from-neutral-900/90 via-neutral-900/60 to-neutral-950/90 p-5 shadow-lg backdrop-blur-md hover:border-neutral-700 hover:-translate-y-1 transition-all duration-200 overflow-hidden"
               >
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center justify-between text-xs text-neutral-400">
                     <span className="font-mono text-neutral-400">ID #{rec.movie_id}</span>
-                    <span className="rounded bg-indigo-500/10 px-2 py-0.5 font-mono font-bold text-indigo-400 border border-indigo-500/20">
+                    <span className="rounded-full bg-indigo-500/15 px-2.5 py-0.5 font-mono font-bold text-indigo-300 border border-indigo-500/30">
                       Score: {rec.score.toFixed(3)}
                     </span>
                   </div>

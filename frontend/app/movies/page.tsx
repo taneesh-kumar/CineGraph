@@ -69,7 +69,7 @@ export default function MoviesPage() {
       </div>
 
       {/* Search Bar */}
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-900/40 p-6 space-y-4">
+      <div className="rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-900/80 to-neutral-950/90 p-6 md:p-8 space-y-5 backdrop-blur-md shadow-xl shadow-black/40">
         <MovieSearch
           onSearch={(q) => {
             setQuery(q);
@@ -80,18 +80,18 @@ export default function MoviesPage() {
 
         {/* Genre filter tags */}
         {availableGenres.length > 0 && (
-          <div className="flex items-center gap-2 pt-2 overflow-x-auto pb-1 text-xs">
-            <span className="text-neutral-500 flex items-center gap-1 shrink-0">
-              <Filter className="h-3 w-3" />
-              Filter:
+          <div className="flex items-center gap-2 pt-1 overflow-x-auto pb-1 text-xs no-scrollbar">
+            <span className="text-neutral-400 flex items-center gap-1.5 shrink-0 font-medium">
+              <Filter className="h-3.5 w-3.5 text-indigo-400" />
+              Filter by Genre:
             </span>
             <button
               type="button"
               onClick={() => setSelectedGenre(null)}
-              className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors shrink-0 ${
+              className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all shrink-0 ${
                 selectedGenre === null
-                  ? "bg-indigo-600 text-white"
-                  : "bg-neutral-800 text-neutral-400 hover:text-white"
+                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30 font-semibold ring-1 ring-indigo-400/50"
+                  : "bg-neutral-800/70 border border-neutral-700/60 text-neutral-400 hover:text-white hover:bg-neutral-800 hover:border-neutral-600"
               }`}
             >
               All Genres ({movies.length})
@@ -101,10 +101,10 @@ export default function MoviesPage() {
                 key={genre}
                 type="button"
                 onClick={() => setSelectedGenre(selectedGenre === genre ? null : genre)}
-                className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors shrink-0 ${
+                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all shrink-0 ${
                   selectedGenre === genre
-                    ? "bg-indigo-600 text-white"
-                    : "bg-neutral-800 text-neutral-400 hover:text-white"
+                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30 font-semibold ring-1 ring-indigo-400/50"
+                    : "bg-neutral-800/70 border border-neutral-700/60 text-neutral-400 hover:text-white hover:bg-neutral-800 hover:border-neutral-600"
                 }`}
               >
                 {genre}
@@ -116,7 +116,7 @@ export default function MoviesPage() {
 
       {/* Movie Results */}
       {isLoading ? (
-        <LoadingState message={query ? `Searching for "${query}" in Neo4j graph...` : "Loading movies..."} />
+        <LoadingState message={query ? `Searching for "${query}"...` : "Loading movies..."} />
       ) : error ? (
         <ErrorState message={error} onRetry={() => fetchMovies(query)} />
       ) : filteredMovies.length === 0 ? (
@@ -124,7 +124,7 @@ export default function MoviesPage() {
           title={query ? `No movies matching "${query}"` : "No movies found"}
           description={
             query
-              ? "The 2,500-movie (2020-2023) sample may not include this title. Try searching for 'Tenet', 'Soul', 'The Gentlemen', or 'Palm Springs'."
+              ? "Try searching for another movie title like 'Tenet', 'Soul', 'The Gentlemen', or 'Palm Springs'."
               : "No movies could be retrieved from the database."
           }
           actionLabel="Clear Search"

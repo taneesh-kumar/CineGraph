@@ -158,7 +158,7 @@ function RecommendationsContent() {
       </div>
 
       {/* Control Box */}
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-900/50 p-6 space-y-6">
+      <div className="rounded-3xl border border-neutral-800/80 bg-gradient-to-b from-neutral-900/80 to-neutral-950/90 p-6 md:p-8 space-y-6 backdrop-blur-md shadow-xl shadow-black/40">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <div className="md:col-span-2">
@@ -186,10 +186,10 @@ function RecommendationsContent() {
                     value={userIdInput}
                     onChange={(e) => setUserIdInput(e.target.value)}
                     placeholder="e.g. 57304"
-                    className="w-full rounded-xl border border-neutral-800 bg-neutral-950 px-3.5 py-2.5 text-sm text-white placeholder:text-neutral-600 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-xl border border-neutral-800 bg-neutral-950/80 px-3.5 py-2.5 text-sm text-white placeholder:text-neutral-600 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                   />
                   {/* Quick User Samples */}
-                  <div className="flex flex-wrap items-center gap-1.5 text-xs text-neutral-400 pt-0.5">
+                  <div className="flex flex-wrap items-center gap-1.5 text-xs text-neutral-400 pt-1">
                     <span className="text-neutral-500 text-[11px]">Quick Picks:</span>
                     {SAMPLE_USERS.map((sample) => (
                       <button
@@ -199,7 +199,7 @@ function RecommendationsContent() {
                           setUserIdInput(String(sample.id));
                           executeRecommendation("user", sample.id, limit);
                         }}
-                        className="rounded-md border border-neutral-800 bg-neutral-900/70 px-2 py-0.5 text-[11px] text-neutral-300 hover:border-neutral-700 hover:text-white transition-colors"
+                        className="rounded-full border border-neutral-800 bg-neutral-900/80 px-2.5 py-0.5 text-[11px] text-neutral-300 hover:border-indigo-500/50 hover:text-white hover:bg-neutral-800 transition-all"
                       >
                         {sample.label}
                       </button>
@@ -211,13 +211,13 @@ function RecommendationsContent() {
 
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-neutral-300 flex items-center gap-1.5">
-                <Sliders className="h-3 w-3" />
+                <Sliders className="h-3 w-3 text-indigo-400" />
                 <span>Limit</span>
               </label>
               <select
                 value={limit}
                 onChange={(e) => setLimit(Number(e.target.value))}
-                className="w-full rounded-xl border border-neutral-800 bg-neutral-950 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full rounded-xl border border-neutral-800 bg-neutral-950/80 px-3.5 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
               >
                 <option value={5}>Top 5</option>
                 <option value={10}>Top 10</option>
@@ -230,7 +230,7 @@ function RecommendationsContent() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-indigo-600/30 transition-colors flex items-center justify-center gap-2"
+                className="w-full rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Sparkles className="h-4 w-4" />
                 <span>{isLoading ? "Finding..." : "Find Recommendations"}</span>
@@ -248,20 +248,20 @@ function RecommendationsContent() {
       ) : results ? (
         <div className="space-y-6">
           {/* Metadata Banner */}
-          <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
-                <CheckCircle2 className="h-4 w-4" />
+          <div className="rounded-2xl border border-neutral-800/80 bg-gradient-to-r from-neutral-900/90 via-neutral-900/70 to-neutral-950/90 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs backdrop-blur-md shadow-md">
+            <div className="flex items-center gap-3.5">
+              <div className="p-2.5 rounded-xl bg-indigo-500/15 border border-indigo-500/20 text-indigo-400">
+                <CheckCircle2 className="h-5 w-5" />
               </div>
               <div>
-                <span className="font-semibold text-white">
+                <span className="font-semibold text-white text-sm">
                   {(results.source_type || results.target_type) === "movie"
                     ? `Recommendations for ${selectedMovie?.title ? `"${selectedMovie.title}"` : (results.source_title ? `"${results.source_title}"` : `Movie #${results.source_id || results.target_id}`)}`
                     : `Personalized Recommendations for User #${results.source_id || results.target_id}`}
                 </span>
-                <p className="text-neutral-400 text-[11px]">
+                <p className="text-neutral-400 text-xs mt-0.5">
                   Algorithm:{" "}
-                  <span className="font-mono text-indigo-300">
+                  <span className="font-mono text-indigo-300 font-medium">
                     {results.algorithm ||
                       ((results.source_type || results.target_type) === "movie"
                         ? "Jaccard Content Similarity"
@@ -271,7 +271,7 @@ function RecommendationsContent() {
               </div>
             </div>
 
-            <div className="text-neutral-500 font-mono text-[11px]">
+            <div className="text-neutral-400 font-mono text-xs px-3 py-1 rounded-full bg-neutral-950/60 border border-neutral-800">
               Returned {results.recommendations.length} ranked candidate(s)
             </div>
           </div>
@@ -283,24 +283,25 @@ function RecommendationsContent() {
               description={
                 mode === "movie"
                   ? "No neighboring movies met the similarity threshold in the graph sample."
-                  : "This user may not have enough rating connections in the development sample to produce collaborative candidates."
+                  : "This user may not have enough rating connections in the sample to produce collaborative candidates."
               }
             />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {results.recommendations.map((rec: RecommendationItem, index: number) => (
                 <div
                   key={rec.movie_id}
-                  className="flex flex-col justify-between rounded-xl border border-neutral-800/90 bg-neutral-900/70 p-5 shadow-sm hover:border-neutral-700 hover:bg-neutral-900 transition-all"
+                  className="group relative flex flex-col justify-between rounded-2xl border border-neutral-800/80 bg-gradient-to-b from-neutral-900/90 via-neutral-900/60 to-neutral-950/90 p-5 shadow-lg backdrop-blur-md hover:border-neutral-700 hover:-translate-y-1 transition-all duration-200 overflow-hidden"
                 >
+                  <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-indigo-500/0 to-transparent group-hover:via-indigo-500/60 transition-all duration-300" />
                   <div>
                     {/* Header rank & score */}
-                    <div className="flex items-center justify-between text-xs mb-2">
-                      <span className="flex h-5 w-5 items-center justify-center rounded-md bg-neutral-800 font-mono text-[11px] font-bold text-neutral-300">
+                    <div className="flex items-center justify-between text-xs mb-3">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-neutral-800/90 border border-neutral-700/60 font-mono text-xs font-bold text-neutral-300">
                         {index + 1}
                       </span>
-                      <div className="flex items-center gap-1 font-mono text-xs font-bold text-indigo-400 bg-indigo-950/60 px-2 py-0.5 rounded border border-indigo-800/60">
-                        <span>Score:</span>
+                      <div className="flex items-center gap-1.5 font-mono text-xs font-bold text-indigo-300 bg-indigo-950/50 px-2.5 py-1 rounded-full border border-indigo-700/50 shadow-sm shadow-indigo-950/50">
+                        <span className="text-[10px] uppercase text-indigo-400 font-semibold tracking-wider">Score</span>
                         <span>{rec.score.toFixed(3)}</span>
                       </div>
                     </div>
@@ -318,7 +319,7 @@ function RecommendationsContent() {
                       {rec.genres.map((g) => (
                         <span
                           key={g}
-                          className="rounded bg-neutral-800 px-2 py-0.5 text-[11px] font-medium text-neutral-300"
+                          className="rounded-full bg-neutral-800/70 border border-neutral-750 px-2.5 py-0.5 text-[11px] font-medium text-neutral-300"
                         >
                           {g}
                         </span>
@@ -327,7 +328,7 @@ function RecommendationsContent() {
 
                     {/* Explanation */}
                     {rec.explanation && (
-                      <div className="rounded-lg bg-neutral-950/70 p-3 border border-neutral-850 text-xs text-neutral-300 leading-relaxed italic">
+                      <div className="rounded-xl bg-neutral-950/70 p-3 border border-neutral-800/70 text-xs text-neutral-300 leading-relaxed italic">
                         &ldquo;{rec.explanation}&rdquo;
                       </div>
                     )}
@@ -338,7 +339,7 @@ function RecommendationsContent() {
                     <span className="font-mono text-[11px] text-neutral-500">ID #{rec.movie_id}</span>
                     <Link
                       href={`/movies/${rec.movie_id}`}
-                      className="inline-flex items-center gap-1 font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
+                      className="inline-flex items-center gap-1.5 font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
                     >
                       <span>Movie Details</span>
                       <ArrowRight className="h-3 w-3" />

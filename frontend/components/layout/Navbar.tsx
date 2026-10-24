@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Film, Compass, Sparkles, BarChart3, Activity, Menu, X } from "lucide-react";
+import { Film, Compass, Sparkles, BarChart3, Activity, Menu, X, Search } from "lucide-react";
 
 interface NavItem {
   href: string;
@@ -68,14 +68,14 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* System Status & Mobile Trigger */}
+        {/* Quick Search & Mobile Trigger */}
         <div className="flex items-center gap-2">
           <Link
-            href="/system"
-            className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-neutral-800 bg-neutral-900/90 px-3 py-1.5 text-xs text-neutral-300 hover:border-neutral-700 hover:text-white transition-colors"
+            href="/movies"
+            className="hidden sm:inline-flex items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-900/90 px-3.5 py-1.5 text-xs font-medium text-neutral-300 hover:border-indigo-500/50 hover:text-white transition-all shadow-sm"
           >
-            <Activity className="h-3.5 w-3.5 text-emerald-400" />
-            <span>System Status</span>
+            <Search className="h-3.5 w-3.5 text-neutral-400" />
+            <span>Search Movies</span>
           </Link>
 
           <button

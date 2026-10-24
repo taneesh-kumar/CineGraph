@@ -16,14 +16,14 @@ export function MovieSearch({
   onSearch,
   isLoading = false,
   initialQuery = "",
-  placeholder = "Search movies by title (e.g. Tenet, Soul, Palm Springs)...",
+  placeholder = "Search movies by title (e.g. Tenet, Soul, Dune)...",
 }: MovieSearchProps) {
   const [value, setValue] = useState(initialQuery);
 
   useEffect(() => {
     const handler = setTimeout(() => {
       onSearch(value.trim());
-    }, 350);
+    }, 320);
 
     return () => clearTimeout(handler);
   }, [value, onSearch]);
@@ -36,7 +36,7 @@ export function MovieSearch({
   return (
     <div className="w-full space-y-3">
       <div className="relative flex items-center">
-        <div className="absolute left-3.5 text-neutral-500 pointer-events-none">
+        <div className="absolute left-4 text-neutral-400 pointer-events-none">
           {isLoading ? (
             <Loader2 className="h-4 w-4 animate-spin text-indigo-400" />
           ) : (
@@ -48,14 +48,14 @@ export function MovieSearch({
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder={placeholder}
-          className="w-full rounded-xl border border-neutral-800 bg-neutral-900/90 pl-10 pr-10 py-3 text-sm text-neutral-100 placeholder:text-neutral-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors shadow-inner"
+          className="w-full rounded-2xl border border-neutral-800 bg-neutral-950/90 pl-11 pr-11 py-3.5 text-sm text-neutral-100 placeholder:text-neutral-500 focus:border-indigo-500/80 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-inner"
           aria-label="Search movies by title"
         />
         {value && (
           <button
             type="button"
             onClick={handleClear}
-            className="absolute right-3 p-1 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+            className="absolute right-3.5 p-1 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
             aria-label="Clear search query"
           >
             <X className="h-4 w-4" />
@@ -65,13 +65,13 @@ export function MovieSearch({
 
       {/* Suggested chips */}
       <div className="flex flex-wrap items-center gap-1.5 text-xs text-neutral-400">
-        <span className="text-neutral-500">Sample searches:</span>
+        <span className="text-neutral-500 text-[11px]">Popular searches:</span>
         {SAMPLE_QUERIES.map((sample) => (
           <button
             key={sample}
             type="button"
             onClick={() => setValue(sample)}
-            className="rounded-md border border-neutral-800 bg-neutral-900/60 px-2 py-0.5 text-neutral-300 hover:border-neutral-700 hover:text-white transition-colors"
+            className="rounded-lg border border-neutral-800/80 bg-neutral-900/80 hover:bg-neutral-800 px-2.5 py-1 text-[11px] text-neutral-300 hover:text-white transition-colors"
           >
             {sample}
           </button>
